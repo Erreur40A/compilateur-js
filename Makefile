@@ -16,10 +16,11 @@ JFLAGS = -g -cp $(LIBPATH) -d $(OUTPATH)
 
 #pour ajouter des classes faire comme le commentaire entre Volume.java et Main.java
 #IL FAUT FAIRE ATTENTION A L'ORDRE DES CLASSES par exemple:
-#si on a 2 classes A et B et que A a une instance de B il faut mettre le chemin de B au dessus de A
+#si on a 2 classes Main et Maclass et que Main a une instance de Maclass il faut mettre le chemin de Maclass au dessus de Main
+#CLASSES = \
+#	$(SRCPATH)chemin/de/la/classe/Maclass.java \
+#	$(SRCPATH)Main.java
 CLASSES = \
-	$(SRCPATH)Volume.java \
-	#(SRCPATH)chemin/de/la/classe/Maclass.java
 	$(SRCPATH)Main.java
 
 default: classes
