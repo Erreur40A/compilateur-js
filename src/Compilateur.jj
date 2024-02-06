@@ -6,7 +6,7 @@ public class Compilateur {
     public static void main(String[] args) {
         try {
             Compilateur parseur = new Compilateur(System.in);
-            parseur.MainNT();
+            parseur.mainNT();
             System.out.println("C'est bien une expression arithmetique");
         } catch (TokenMgrError e) {
             System.out.println("Ceci n'est pas une expression arithméthique");
@@ -18,11 +18,11 @@ public class Compilateur {
 PARSER_END(Compilateur)
 
 SKIP :
-{ " " | "\t"}
+{ " " | "\t" | "\n"}
 
 TOKEN :
-{ < NOMBRE: ["1"-"9"] (["0"-"9"])*>
-    | <EOL: "\n" >
+{ < NOMBRE: ["1"-"9"] (["0"-"9"])* >
+    | <EOL: ";" >
 }
 
 void mainNT () :
