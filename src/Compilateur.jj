@@ -1,17 +1,24 @@
 PARSER_BEGIN(Compilateur)
 
 import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class Compilateur {
     public static void main(String[] args) {
         try {
-            Compilateur parseur = new Compilateur(System.in);
+            FileReader f = new FileReader(args[0]);
+            BufferedReader reader = new BufferedReader(f);
+            Compilateur parseur = new Compilateur(reader);
             parseur.mainNT();
             System.out.println("C'est bien une expression arithmetique");
         } catch (TokenMgrError e) {
             System.out.println("Ceci n'est pas une expression arithméthique");
         } catch (ParseException e){
             System.out.println("Ceci n'est pas une expression arithméthique");
+        }catch (IOException e){
+            e.printStackTrace();
         }
     }
 }
