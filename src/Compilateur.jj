@@ -3,8 +3,10 @@ PARSER_BEGIN(Compilateur)
 public class Compilateur {
     public static void main(String[] args) {
         try {
-            Compilateur parseur = new Compilateur(System.in);
-            int i = parseur.mainNT();
+            FileReader f = new FileReader(args[0]);
+            BufferedReader reader = new BufferedReader(f);
+            Compilateur parseur = new Compilateur(reader);
+            i=parseur.mainNT();
             System.out.println(i);
         } catch (TokenMgrError e) {
             System.out.println("Token Ceci n'est pas une expression arithméthique");
