@@ -46,8 +46,8 @@ ExpressionA expression () :
     ExpressionA res;
 }
 { gauche=terme() {res=gauche;}
-    ("+" (droite=terme()) {res=new Plus(gauche, droite);}
-    | "-" (droite=terme()) {res=new Moins(gauche, droite);}
+    ("+" (droite=terme()) {gauche=new Plus(gauche, droite); res=gauche;}
+    | "-" (droite=terme()) {gauche=new Moins(gauche, droite); res=gauche;}
     )* {return res;}
 }
 
@@ -58,8 +58,8 @@ ExpressionA terme () :
     ExpressionA res;
 }
 { gauche=facteur() {res=gauche;}
-    ("*" (droite=facteur()) {res=new Mult(gauche, droite);}
-    | "/" (droite=facteur()) {res=new Div(gauche, droite);}
+    ("*" (droite=facteur()) {gauche=new Mult(gauche, droite); res=gauche;}
+    | "/" (droite=facteur()) {gauche=new Div(gauche, droite); res=gauche;}
     )* {return res;}
 }
 
