@@ -70,5 +70,5 @@ ExpressionA facteur () :
 }
 { "(" (e=expression()) ")" {return e;}
     | "-" (e=facteur()) {return new Neg(e);}
-    | t=<NOMBRE> {return new Num(Integer.parseInt(t.image));}
+    | t=<NOMBRE> {return new Num(Float.parseFloat(t.image));}
 }
