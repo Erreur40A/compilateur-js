@@ -18,9 +18,9 @@ public class Compilateur {
         } catch (TokenMgrError e) {
             System.out.println("Token Ceci n'est pas une expression arithméthique");
         } catch (ParseException e){
-            System.out.println("Parser Ceci n'est pas une expression arithméthique");
-        }catch (IOException e){
-            e.printStackTrace();
+            System.out.println("Ceci n'est pas une expression arithméthique");
+        } catch (IOException e) {
+            System.out.println("IOException");
         }
     }
 }
