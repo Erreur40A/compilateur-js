@@ -8,5 +8,9 @@ public class Div extends ExpressionA_Binaire{
 
     public String symbole(){
         return "diviser";
-    }; 
+    }
+
+    public String toAssembly(){
+        return "DivNb";
+    }
 }

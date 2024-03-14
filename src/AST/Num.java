@@ -11,4 +11,7 @@ public class Num extends ExpressionA {
     return Integer.toString(num);
   }
 
+  public String toAssembly(){
+    return "CsteNB " + num;
+}
 }
