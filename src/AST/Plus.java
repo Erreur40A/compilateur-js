@@ -7,8 +7,8 @@ public class Plus extends ExpressionA_Binaire {
     public String symbole() {return "plus";}
 
     public String toAssembly(){
-        String asb=droite.toAssembly() + "\n" +
-                   gauche.toAssembly() + "\n" +
+        String asb=gauche.toAssembly() + "\n" +
+                   droite.toAssembly() + "\n" +
                    "AddiNb";
 
         return asb;
