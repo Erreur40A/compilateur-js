@@ -1,27 +1,36 @@
 PARSER_BEGIN(Compilateur)
 
+
+import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import AST.*;
 
 public class Compilateur {
     public static void main(String[] args) {
         try {
-            Compilateur parseur = new Compilateur(System.in);
+            FileReader f = new FileReader(args[0]);
+            BufferedReader reader = new BufferedReader(f);
+            Compilateur parseur = new Compilateur(reader);
             ExpressionA eA=parseur.mainNT();
             System.out.println(eA.toAssembly());
         } catch (TokenMgrError e) {
-            System.out.println("Ceci n'est pas une expression arithméthique");
+            System.out.println("Token Ceci n'est pas une expression arithméthique");
         } catch (ParseException e){
             System.out.println("Ceci n'est pas une expression arithméthique");
+        } catch (IOException e) {
+            System.out.println("IOException");
         }
     }
 }
 PARSER_END(Compilateur)
 
 SKIP :
-{ " " | "\t" | "\n"}
+{ " " | "\t" | "\n" }
 
 TOKEN :
-{ < NOMBRE: ["1"-"9"] (["0"-"9"])* >
+{ < NOMBRE: (["0"-"9"]) (["0"-"9"])* (["."])? (["0"-"9"])* >
     | <EOL: ";" >
 }
 
@@ -38,8 +47,8 @@ ExpressionA expression () :
     ExpressionA res;
 }
 { gauche=terme() {res=gauche;}
-    ("+" (droite=terme()) {res=new Plus(gauche, droite);}
-    | "-" (droite=terme()) {res=new Moins(gauche, droite);}
+    ("+" (droite=terme()) {gauche=new Plus(gauche, droite); res=gauche;}
+    | "-" (droite=terme()) {gauche=new Moins(gauche, droite); res=gauche;}
     )* {return res;}
 }
 
@@ -50,7 +59,8 @@ ExpressionA terme () :
     ExpressionA res;
 }
 { gauche=facteur() {res=gauche;}
-    ("*" (droite=facteur()) {res=new Mult(gauche, droite);}
+    ("*" (droite=facteur()) {gauche=new Mult(gauche, droite); res=gauche;}
+    | "/" (droite=facteur()) {gauche=new Div(gauche, droite); res=gauche;}
     )* {return res;}
 }
 
@@ -61,5 +71,5 @@ ExpressionA facteur () :
 }
 { "(" (e=expression()) ")" {return e;}
     | "-" (e=facteur()) {return new Neg(e);}
-    | t=<NOMBRE> {return new Num(Integer.parseInt(t.image));}
+    | t=<NOMBRE> {return new Num(Float.parseFloat(t.image));}
 }
