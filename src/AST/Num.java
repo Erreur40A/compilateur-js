@@ -1,14 +1,14 @@
 package AST;
 
 public class Num extends ExpressionA {
-  public int num;
+  public float num;
     
-  public Num(int num) {
+  public Num(float num) {
     this.num = num;
   }
   
   public String toString() {
-    return Integer.toString(num);
+    return Float.toString(num);
   }
 
   public String toAssembly(){
