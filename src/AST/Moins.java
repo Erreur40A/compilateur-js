@@ -7,6 +7,10 @@ public class Moins extends ExpressionA_Binaire {
     public String symbole() {return "moins";}
 
     public String toAssembly(){
-        return "SubiNb";
+        String asb=droite.toAssembly() + "\n" +
+                   gauche.toAssembly() + "\n" +
+                   "SubiNb";
+
+        return asb;
     }
 }
