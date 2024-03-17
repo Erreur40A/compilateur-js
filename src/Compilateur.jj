@@ -1,26 +1,81 @@
 PARSER_BEGIN(Compilateur)
 
 
-import java.io.InputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.File;
 import AST.*;
 
 public class Compilateur {
     public static void main(String[] args) {
+        if(args.length != 1){
+           throw new IllegalArgumentException("Il faut obligatoirement UN FICHIER en argument");
+        }
+
         try {
-            FileReader f = new FileReader(args[0]);
-            BufferedReader reader = new BufferedReader(f);
+            BufferedReader reader = readerFile(args[0]);
             Compilateur parseur = new Compilateur(reader);
             ExpressionA eA=parseur.mainNT();
-            System.out.println(eA.toAssembly());
+            String pathJSM=createFile(args[0]);
+
+            writeFile(pathJSM, eA.toAssembly());
         } catch (TokenMgrError e) {
-            System.out.println("Token Ceci n'est pas une expression arithméthique");
+            System.out.println("Token Ceci n'est pas une expression arithm\u00e9thique");
         } catch (ParseException e){
-            System.out.println("Ceci n'est pas une expression arithméthique");
+            System.out.println("Parseur Ceci n'est pas une expression arithm\u00e9thique");
+        }
+    }
+
+    public static BufferedReader readerFile(String pathFile){
+        BufferedReader res=null;
+        try {
+            FileReader f = new FileReader(pathFile);
+            res = new BufferedReader(f);
+        }catch (IOException e) {
+            System.out.println("readFile: " + e.getMessage());
+        }
+
+        return res;
+    }
+
+    public static String createFile(String path){
+        path = path + ".jsm";
+        File f = new File(path);
+
+        if(!f.exists()){
+            try {
+                f.createNewFile();
+            } catch (IOException e) {
+                return f.getPath();
+            }
+        }
+
+        return f.getPath();
+    }
+
+    public static void closeBufferedWriter(BufferedWriter writer){
+        if (writer != null) {
+            try {
+                writer.close();
+            } catch (IOException e) {
+                System.out.println("writeFile fermeture buffeur : " + e.getMessage());
+            }
+        }
+    }
+
+    public static void writeFile(String path, String contenu){
+        BufferedWriter writer = null;
+
+        try {
+            writer = new BufferedWriter(new FileWriter(path));
+            writer.write(contenu);
         } catch (IOException e) {
-            System.out.println("IOException");
+            System.out.println("writeFile ecrire contenue: " + e.getMessage());
+        } finally {
+            closeBufferedWriter(writer);
         }
     }
 }
