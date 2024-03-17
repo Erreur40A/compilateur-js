@@ -12,6 +12,6 @@ public class Num extends ExpressionA {
   }
 
   public String toAssembly(){
-    return "CsteNB " + num;
+    return "CsteNb " + num;
 }
 }

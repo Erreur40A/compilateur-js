@@ -9,7 +9,7 @@ public class Plus extends ExpressionA_Binaire {
     public String toAssembly(){
         String asb=droite.toAssembly() + "\n" +
                    gauche.toAssembly() + "\n" +
-                   "PlusNb";
+                   "AddiNb";
 
         return asb;
     }
