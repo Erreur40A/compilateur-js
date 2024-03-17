@@ -5,7 +5,7 @@ OUT_DIR_JCC = src/
 FILE_JJ = src/Compilateur.jj
 AST_DIR = src/AST
 
-all: $(BIN_DIR)
+all:
 	$(JAVACC) -OUTPUT_DIRECTORY=$(OUT_DIR_JCC) $(FILE_JJ)
 	$(JAVAC) $(AST_DIR)/*.java $(SRC_DIR)/*.java
 
