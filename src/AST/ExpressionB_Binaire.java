@@ -1,10 +1,10 @@
 package AST;
 
 abstract class ExpressionB_Binaire extends ExpressionB{
-    ExpressionA gauche;
-    ExpressionA droite;
+    ExpressionB gauche;
+    ExpressionB droite;
 
-    ExpressionB_Binaire (ExpressionA gauche,ExpressionA droite) {
+    ExpressionB_Binaire (ExpressionB gauche,ExpressionB droite) {
         this.gauche = gauche;
         this.droite = droite;
       }

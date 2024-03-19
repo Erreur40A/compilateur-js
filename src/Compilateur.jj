@@ -88,8 +88,8 @@ TOKEN :
 { < NOMBRE: (["0"-"9"]) (["0"-"9"])* (["."])? (["0"-"9"])* >
   | <EOL: ";" >
   | <BOOLEAN: "True" | "False" >
-  | <EGALITE: "==" >
-  | <PPETITOUE: "<=" >
+  | <EGALITE: <NOMBRE> "==" <NOMBRE> | <BOOLEAN> "==" <BOOLEAN>>
+  | <PPETITOUE: <NOMBRE> "<=" <NOMBRE> >
 }
 
 //Expression arithmétique
@@ -120,7 +120,7 @@ ExpressionA terme () :
 }
 { gauche=facteur() {res=gauche;}
     ("*" (droite=facteur()) {gauche=new Mult(gauche, droite); res=gauche;}
-    | "/" (droite=facteur()) {gauche=new Div(gauche, droite); res=gauche;}
+    |"/" (droite=facteur()) {gauche=new Div(gauche, droite); res=gauche;}
     )* {return res;}
 }
 
@@ -145,20 +145,26 @@ ExpressionB mainNTBool () :
 {
     ExpressionB e;
 }
-{ (e=expression()) <EOL> {return e;}}
+{ (e=expressionBool()) <EOL> {return e;}}
 
-ExpressionB expression () :
+ExpressionB expressionBool() :
 {
-    ExpressionA gauche;
-    ExpressionA droite;
     ExpressionB res;
-    Token t;
+    ExpressionB gauche;
+    ExpressionB droite;
 }
-{ gauche=terme() {res=gauche;}
-    (( t=<EGALITE> {return new Egalite(gauche, droite);}
-      |t=<PPETITOUE> {return new PPetitE(gauche, droite);}
-    )
-    (  droite=terme() {res}
+{   (gauche=termeBool()) {res=gauche;}
+    ( <EGALITE> droite=termeBool() {gauche=new Egalite(gauche, droite); res=gauche;}
+     |<PPETITOUE> droite=termeBool() {gauche=new PPetitE(gauche, droite); res=gauche;}
+    )* {return res;}
+}
 
-    ))* {return res;}
+ExpressionB termeBool() :
+{
+    Token t;
+    ExpressionB e;
+}
+{
+    "(" e=expressionBool() ")" {return e;}
+    |t=<BOOLEAN> {return new Bool(Boolean.parseBoolean(t.image));}
 }
