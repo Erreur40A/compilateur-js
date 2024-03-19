@@ -1,4 +1,4 @@
-Vous vous trouvez sur la branche ‘‘code_gen’’ du projet de compilation.
+Vous vous trouvez sur la branche "code_gen" du projet de compilation.
 
-build make dans le repertoire Compilation
-java Main pour executer
+build: tapez la commande 'make' dans le repertoire 'compilation/'
+execution: allez dans le dossier 'src/' et tapez la commande 'java Compilateur'

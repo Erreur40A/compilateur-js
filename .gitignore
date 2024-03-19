@@ -1,0 +1,9 @@
+javacc-javacc-7.0.13/*
+javacc.jar
+*.class
+########
+#=tout les fichier .java sauf ceux de src/AST
+*.java
+!src/AST/*.java
+######## 
+test*
