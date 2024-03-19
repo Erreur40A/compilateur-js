@@ -1,6 +1,6 @@
 package AST;
 
-public class Bool extends ExpressionB{
+public class Bool extends ExpressionA{
     public boolean b;
 
     public Bool(boolean b){
