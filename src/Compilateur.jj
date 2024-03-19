@@ -139,39 +139,3 @@ ExpressionA facteur () :
     | t=<NOMBRE> {return new Num(Float.parseFloat(t.image));}
     | t=<BOOLEAN> {return new Bool(Boolean.parseBoolean(t.image));}
 }
-
-/*
-Priorité boolean:
-+,-,*,/ prioritaire sur ==, <=
-*/
-
-//Expression booleenne 
-
-/*ExpressionA mainNTBool () :
-{
-    ExpressionA e;
-}
-{ (e=expressionBool()) <EOL> {return e;}}
-
-ExpressionA expressionBool() :
-{
-    ExpressionA res=null;
-    ExpressionA gauche;
-    ExpressionA droite;
-}
-{   
-    gauche=termeBool()
-    (<EGALITE> droite=termeBool() {res=new Egalite(gauche, droite);}
-    |<PPETITOUE> droite=termeBool() {res=new PPetitE(gauche, droite);}
-    )* {return res;}
-}
-
-ExpressionA termeBool() :
-{
-    Token t;
-    ExpressionA eA;
-}
-{
-    t=<BOOLEAN> {return new Bool(Boolean.parseBoolean(t.image));}
-    |eA=expression() {return eA;}
-}*/
