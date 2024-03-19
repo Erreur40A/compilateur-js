@@ -18,10 +18,10 @@ public class Compilateur {
         try {
             BufferedReader reader = readerFile(args[0]);
             Compilateur parseur = new Compilateur(reader);
-            ExpressionB eB=parseur.mainNTBool();
+            ExpressionA eA=parseur.mainNT();
             String pathJSM=createFile(args[0]);
 
-            writeFile(pathJSM, eB.toAssembly());
+            writeFile(pathJSM, eA.toAssembly());
         } catch (TokenMgrError e) {
             //System.out.println("Token Ceci n'est pas une expression arithm\u00e9thique");
             e.printStackTrace();
@@ -89,12 +89,13 @@ SKIP :
 TOKEN :
 { < NOMBRE: (["0"-"9"]) (["0"-"9"])* (["."])? (["0"-"9"])* >
   | <EOL: ";" >
-  | <BOOLEAN: "True" | "False" >
+  //Priorité boolean: +,-,*,/ prioritaire sur ==, <=
+  | <BOOLEAN: "True" | "False" > 
   | <EGALITE: "==" >
   | <PPETITOUE: "<=" >
 }
 
-//Expression arithmétique
+//Pour les tests sur le fichier test il faut que True et False commence par un majuscule et pas une minuscule
 
 ExpressionA mainNT () :
 {
@@ -111,6 +112,8 @@ ExpressionA expression () :
 { gauche=terme() {res=gauche;}
     ("+" (droite=terme()) {gauche=new Plus(gauche, droite); res=gauche;}
     | "-" (droite=terme()) {gauche=new Moins(gauche, droite); res=gauche;}
+    |<EGALITE> droite=terme() {gauche=new Egalite(gauche, droite); res=gauche;}
+    |<PPETITOUE> droite=terme() {gauche=new PPetitE(gauche, droite); res=gauche;}
     )* {return res;}
 }
 
@@ -134,6 +137,7 @@ ExpressionA facteur () :
 { "(" (e=expression()) ")" {return e;}
     | "-" (e=facteur()) {return new Neg(e);}
     | t=<NOMBRE> {return new Num(Float.parseFloat(t.image));}
+    | t=<BOOLEAN> {return new Bool(Boolean.parseBoolean(t.image));}
 }
 
 /*
@@ -142,17 +146,16 @@ Priorité boolean:
 */
 
 //Expression booleenne 
-//Pour les tests sur le fichier test il faut que True et False commence par un majuscule et pas une minuscule
 
-ExpressionB mainNTBool () :
+/*ExpressionA mainNTBool () :
 {
-    ExpressionB e;
+    ExpressionA e;
 }
 { (e=expressionBool()) <EOL> {return e;}}
 
-ExpressionB expressionBool() :
+ExpressionA expressionBool() :
 {
-    ExpressionB res=null;
+    ExpressionA res=null;
     ExpressionA gauche;
     ExpressionA droite;
 }
@@ -171,4 +174,4 @@ ExpressionA termeBool() :
 {
     t=<BOOLEAN> {return new Bool(Boolean.parseBoolean(t.image));}
     |eA=expression() {return eA;}
-}
+}*/
