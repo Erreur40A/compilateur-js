@@ -86,8 +86,13 @@ SKIP :
 
 TOKEN :
 { < NOMBRE: (["0"-"9"]) (["0"-"9"])* (["."])? (["0"-"9"])* >
-    | <EOL: ";" >
+  | <EOL: ";" >
+  | <BOOLEAN: "True" | "False" >
+  | <EGALITE: "==" >
+  | <PPETITOUE: "<=" >
 }
+
+//Expression arithmétique
 
 ExpressionA mainNT () :
 {
@@ -127,4 +132,33 @@ ExpressionA facteur () :
 { "(" (e=expression()) ")" {return e;}
     | "-" (e=facteur()) {return new Neg(e);}
     | t=<NOMBRE> {return new Num(Float.parseFloat(t.image));}
+}
+
+/*
+Priorité boolean:
++,-,*,/ prioritaire sur ==, <=
+*/
+
+//Expression booleenne
+
+ExpressionB mainNTBool () :
+{
+    ExpressionB e;
+}
+{ (e=expression()) <EOL> {return e;}}
+
+ExpressionB expression () :
+{
+    ExpressionA gauche;
+    ExpressionA droite;
+    ExpressionB res;
+    Token t;
+}
+{ gauche=terme() {res=gauche;}
+    (( t=<EGALITE> {return new Egalite(gauche, droite);}
+      |t=<PPETITOUE> {return new PPetitE(gauche, droite);}
+    )
+    (  droite=terme() {res}
+
+    ))* {return res;}
 }
