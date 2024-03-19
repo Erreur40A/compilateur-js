@@ -1,6 +1,6 @@
 package AST;
 
-public class PPetitE extends ExpressionB_Binaire{
+public class PPetitE extends ExpressionA_Binaire{
     public PPetitE(ExpressionA gauche,ExpressionA droite) {super(gauche, droite);}
 
     public String symbole() {return "<=";}
