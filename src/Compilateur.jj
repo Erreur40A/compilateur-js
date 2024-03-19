@@ -18,14 +18,16 @@ public class Compilateur {
         try {
             BufferedReader reader = readerFile(args[0]);
             Compilateur parseur = new Compilateur(reader);
-            ExpressionA eA=parseur.mainNT();
+            ExpressionB eB=parseur.mainNTBool();
             String pathJSM=createFile(args[0]);
 
-            writeFile(pathJSM, eA.toAssembly());
+            writeFile(pathJSM, eB.toAssembly());
         } catch (TokenMgrError e) {
-            System.out.println("Token Ceci n'est pas une expression arithm\u00e9thique");
+            //System.out.println("Token Ceci n'est pas une expression arithm\u00e9thique");
+            e.printStackTrace();
         } catch (ParseException e){
-            System.out.println("Parseur Ceci n'est pas une expression arithm\u00e9thique");
+            //System.out.println("Parseur Ceci n'est pas une expression arithm\u00e9thique");
+            e.printStackTrace();
         }
     }
 
@@ -120,7 +122,7 @@ ExpressionA terme () :
 }
 { gauche=facteur() {res=gauche;}
     ("*" (droite=facteur()) {gauche=new Mult(gauche, droite); res=gauche;}
-    | "/" (droite=facteur()) {gauche=new Div(gauche, droite); res=gauche;}
+    |"/" (droite=facteur()) {gauche=new Div(gauche, droite); res=gauche;}
     )* {return res;}
 }
 
@@ -139,26 +141,34 @@ Priorité boolean:
 +,-,*,/ prioritaire sur ==, <=
 */
 
-//Expression booleenne
+//Expression booleenne 
+//Pour les tests sur le fichier test il faut que True et False commence par un majuscule et pas une minuscule
 
 ExpressionB mainNTBool () :
 {
     ExpressionB e;
 }
-{ (e=expression()) <EOL> {return e;}}
+{ (e=expressionBool()) <EOL> {return e;}}
 
-ExpressionB expression () :
+ExpressionB expressionBool() :
 {
+    ExpressionB res=null;
     ExpressionA gauche;
     ExpressionA droite;
-    ExpressionB res;
-    Token t;
 }
-{ gauche=terme() {res=gauche;}
-    (( t=<EGALITE> {return new Egalite(gauche, droite);}
-      |t=<PPETITOUE> {return new PPetitE(gauche, droite);}
-    )
-    (  droite=terme() {res}
+{   
+    gauche=termeBool()
+    (<EGALITE> droite=termeBool() {res=new Egalite(gauche, droite);}
+    |<PPETITOUE> droite=termeBool() {res=new PPetitE(gauche, droite);}
+    )* {return res;}
+}
 
-    ))* {return res;}
+ExpressionA termeBool() :
+{
+    Token t;
+    ExpressionA eA;
+}
+{
+    t=<BOOLEAN> {return new Bool(Boolean.parseBoolean(t.image));}
+    |eA=expression() {return eA;}
 }
