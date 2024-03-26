@@ -23,9 +23,11 @@ public class Compilateur {
 
             writeFile(pathJSM, eA.toAssembly());
         } catch (TokenMgrError e) {
-            System.out.println("Token Ceci n'est pas une expression arithm\u00e9thique");
+            //System.out.println("Token Ceci n'est pas une expression arithm\u00e9thique");
+            e.printStackTrace();
         } catch (ParseException e){
-            System.out.println("Parseur Ceci n'est pas une expression arithm\u00e9thique");
+            //System.out.println("Parseur Ceci n'est pas une expression arithm\u00e9thique");
+            e.printStackTrace();
         }
     }
 
@@ -86,8 +88,14 @@ SKIP :
 
 TOKEN :
 { < NOMBRE: (["0"-"9"]) (["0"-"9"])* (["."])? (["0"-"9"])* >
-    | <EOL: ";" >
+  | <EOL: ";" >
+  //Priorité boolean: +,-,*,/ prioritaire sur ==, <=
+  | <BOOLEAN: "True" | "False" > 
+  | <EGALITE: "==" >
+  | <PPETITOUE: "<=" >
 }
+
+//Pour les tests sur le fichier test il faut que True et False commence par un majuscule et pas une minuscule
 
 ExpressionA mainNT () :
 {
@@ -104,6 +112,8 @@ ExpressionA expression () :
 { gauche=terme() {res=gauche;}
     ("+" (droite=terme()) {gauche=new Plus(gauche, droite); res=gauche;}
     | "-" (droite=terme()) {gauche=new Moins(gauche, droite); res=gauche;}
+    |<EGALITE> droite=terme() {gauche=new Egalite(gauche, droite); res=gauche;}
+    |<PPETITOUE> droite=terme() {gauche=new PPetitE(gauche, droite); res=gauche;}
     )* {return res;}
 }
 
@@ -115,7 +125,7 @@ ExpressionA terme () :
 }
 { gauche=facteur() {res=gauche;}
     ("*" (droite=facteur()) {gauche=new Mult(gauche, droite); res=gauche;}
-    | "/" (droite=facteur()) {gauche=new Div(gauche, droite); res=gauche;}
+    |"/" (droite=facteur()) {gauche=new Div(gauche, droite); res=gauche;}
     )* {return res;}
 }
 
@@ -127,4 +137,5 @@ ExpressionA facteur () :
 { "(" (e=expression()) ")" {return e;}
     | "-" (e=facteur()) {return new Neg(e);}
     | t=<NOMBRE> {return new Num(Float.parseFloat(t.image));}
+    | t=<BOOLEAN> {return new Bool(Boolean.parseBoolean(t.image));}
 }
