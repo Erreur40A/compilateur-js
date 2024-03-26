@@ -30,6 +30,7 @@ TOKEN :
   | <PPETITOUE: "<=" >
   | <NAN: "NaN" >
   | <NOMBRESCI: <NOMBRE> "e" ("-")? (["0"-"9"])+ >
+  | <PGRANDOUE: ">=" >
 }
 
 //Pour les tests sur le fichier test il faut que True et False commence par un majuscule et pas une minuscule
@@ -45,6 +46,10 @@ void expression () :
     | "-" terme()
     |<EGALITE> terme()
     |<PPETITOUE> terme()
+    |<PGRANDOUE> terme()
+    | "!" terme()
+    | "<" terme()
+    | ">" terme()
     )*
 }
 
