@@ -8,5 +8,13 @@ public class Div extends ExpressionA_Binaire{
 
     public String symbole(){
         return "diviser";
-    }; 
+    }
+
+    public String toAssembly(){
+        String asb=gauche.toAssembly() + "\n" +
+                   droite.toAssembly() + "\n" +
+                   "DivNb";
+
+        return asb;
+    }
 }

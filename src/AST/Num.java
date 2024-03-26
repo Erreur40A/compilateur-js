@@ -11,4 +11,7 @@ public class Num extends ExpressionA {
     return Float.toString(num);
   }
 
+  public String toAssembly(){
+    return "CsteNb " + num;
+  }
 }
