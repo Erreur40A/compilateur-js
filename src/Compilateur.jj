@@ -33,8 +33,6 @@ TOKEN :
   | <PGRANDOUE: ">=" >
 }
 
-//Pour les tests sur le fichier test il faut que True et False commence par un majuscule et pas une minuscule
-
 void mainNT () :
 {}
 { expression() <EOL> }
