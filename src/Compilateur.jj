@@ -1,18 +1,17 @@
 PARSER_BEGIN(Compilateur)
 
-import AST.*;
 
 public class Compilateur {
     public static void main(String[] args) {
         try {
             Compilateur parseur = new Compilateur(System.in);
-            ExpressionA eA=parseur.mainNT();
-            System.out.println(eA);
+            parseur.mainNT();
+            System.out.println("Ceci est une expression reconnue");
         } catch (TokenMgrError e) {
-            System.out.println("Token Ceci n'est pas une expression arithm\u00e9thique");
+            System.out.println("Token Ceci n'est pas une expression reconnue");
             //e.printStackTrace();
         } catch (ParseException e){
-            System.out.println("Parseur Ceci n'est pas une expression arithm\u00e9thique");
+            System.out.println("Parseur Ceci n'est pas une expression reconnue");
             //e.printStackTrace();
         }
     }
@@ -23,55 +22,46 @@ SKIP :
 { " " | "\t" | "\n" }
 
 TOKEN :
-{ < NOMBRE: ((["0"-"9"]) (["0"-"9"])* (["."])? (["0"-"9"])*) | "Nan" | ((["0"-"9"]) (["0"-"9"])* (["."])? (["0"-"9"])* "e" (["0"-"9"]) (["0"-"9"])*) >
+{ < NOMBRE: (["0"-"9"])+ (["."])? (["0"-"9"])* >
   | <EOL: ";" >
   //Priorité boolean: +,-,*,/ prioritaire sur ==, <=
   | <BOOLEAN: "True" | "False" > 
   | <EGALITE: "==" >
   | <PPETITOUE: "<=" >
+  | <NAN: "NaN" >
+  | <NOMBRESCI: <NOMBRE> "e" ("-")? (["0"-"9"])+ >
 }
 
 //Pour les tests sur le fichier test il faut que True et False commence par un majuscule et pas une minuscule
 
-ExpressionA mainNT () :
-{
-    ExpressionA e;
-}
-{ (e=expression()) <EOL> {return e;}}
+void mainNT () :
+{}
+{ expression() <EOL> }
 
-ExpressionA expression () :
-{
-    ExpressionA gauche;
-    ExpressionA droite;
-    ExpressionA res;
-}
-{ gauche=terme() {res=gauche;}
-    ("+" (droite=terme()) {gauche=new Plus(gauche, droite); res=gauche;}
-    | "-" (droite=terme()) {gauche=new Moins(gauche, droite); res=gauche;}
-    |<EGALITE> droite=terme() {gauche=new Egalite(gauche, droite); res=gauche;}
-    |<PPETITOUE> droite=terme() {gauche=new PPetitE(gauche, droite); res=gauche;}
-    )* {return res;}
+void expression () :
+{}
+{ terme()
+    ("+" terme()
+    | "-" terme()
+    |<EGALITE> terme()
+    |<PPETITOUE> terme()
+    )*
 }
 
-ExpressionA terme () :
-{
-    ExpressionA gauche;
-    ExpressionA droite;
-    ExpressionA res;
-}
-{ gauche=facteur() {res=gauche;}
-    ("*" (droite=facteur()) {gauche=new Mult(gauche, droite); res=gauche;}
-    |"/" (droite=facteur()) {gauche=new Div(gauche, droite); res=gauche;}
-    )* {return res;}
+void terme () :
+{}
+{ facteur()
+    ("*" facteur()
+    |"/" facteur()
+    )*
 }
 
-ExpressionA facteur () :
-{
-    ExpressionA e;
-    Token t;
-}
-{ "(" (e=expression()) ")" {return e;}
-    | "-" (e=facteur()) {return new Neg(e);}
-    | t=<NOMBRE> {return new Num(Float.parseFloat(t.image));}
-    | t=<BOOLEAN> {return new Bool(Boolean.parseBoolean(t.image));}
+void facteur () :
+{}
+{   "(" expression() ")"
+    |"-" facteur()
+    |<NOMBRE>
+    |<NOMBRESCI>
+    |<NAN>
+    |<BOOLEAN>
 }
