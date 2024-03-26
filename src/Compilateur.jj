@@ -1,11 +1,13 @@
 PARSER_BEGIN(Compilateur)
 
+import AST.*;
+
 public class Compilateur {
     public static void main(String[] args) {
         try {
             Compilateur parseur = new Compilateur(System.in);
-            parseur.mainNT();
-            System.out.println("Cette expression est reconnu");
+            ExpressionA eA=parseur.mainNT();
+            System.out.println(eA);
         } catch (TokenMgrError e) {
             System.out.println("Token Ceci n'est pas une expression arithm\u00e9thique");
             //e.printStackTrace();
