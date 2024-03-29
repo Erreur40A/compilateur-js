@@ -1,18 +1,83 @@
 PARSER_BEGIN(Compilateur)
 
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.File;
+import AST.*;
+
 public class Compilateur {
     public static void main(String[] args) {
+        if(args.length != 1){
+           throw new IllegalArgumentException("Il faut obligatoirement UN FICHIER en argument");
+        }
+
         try {
-            Compilateur parseur = new Compilateur(System.in);
-            parseur.mainNT();
-            System.out.println("Ceci est une expression reconnue");
+            BufferedReader reader = readerFile(args[0]);
+            Compilateur parseur = new Compilateur(reader);
+            ExpressionA eA=parseur.mainNT();
+            String pathJSM=createFile(args[0]);
+
+            writeFile(pathJSM, eA.toAssembly());
         } catch (TokenMgrError e) {
-            System.out.println("Token Ceci n'est pas une expression reconnue");
-            //e.printStackTrace();
+            //System.out.println("Token Ceci n'est pas une expression arithm\u00e9thique");
+            e.printStackTrace();
         } catch (ParseException e){
-            System.out.println("Parseur Ceci n'est pas une expression reconnue");
-            //e.printStackTrace();
+            //System.out.println("Parseur Ceci n'est pas une expression arithm\u00e9thique");
+            e.printStackTrace();
+        }
+    }
+
+    public static BufferedReader readerFile(String pathFile){
+        BufferedReader res=null;
+        try {
+            FileReader f = new FileReader(pathFile);
+            res = new BufferedReader(f);
+        }catch (IOException e) {
+            System.out.println("readFile: " + e.getMessage());
+        }
+
+        return res;
+    }
+
+    public static String createFile(String path){
+        path = path + ".jsm";
+        File f = new File(path);
+
+        if(!f.exists()){
+            try {
+                f.createNewFile();
+            } catch (IOException e) {
+                return f.getPath();
+            }
+        }
+
+        return f.getPath();
+    }
+
+    public static void closeBufferedWriter(BufferedWriter writer){
+        if (writer != null) {
+            try {
+                writer.close();
+            } catch (IOException e) {
+                System.out.println("writeFile fermeture buffeur : " + e.getMessage());
+            }
+        }
+    }
+
+    public static void writeFile(String path, String contenu){
+        BufferedWriter writer = null;
+
+        try {
+            writer = new BufferedWriter(new FileWriter(path));
+            writer.write(contenu);
+        } catch (IOException e) {
+            System.out.println("writeFile ecrire contenue: " + e.getMessage());
+        } finally {
+            closeBufferedWriter(writer);
         }
     }
 }
@@ -22,49 +87,55 @@ SKIP :
 { " " | "\t" | "\n" }
 
 TOKEN :
-{ < NOMBRE: (["0"-"9"])+ (["."])? (["0"-"9"])* >
+{ < NOMBRE: (["0"-"9"]) (["0"-"9"])* (["."])? (["0"-"9"])* >
   | <EOL: ";" >
   //Priorité boolean: +,-,*,/ prioritaire sur ==, <=
   | <BOOLEAN: "True" | "False" > 
   | <EGALITE: "==" >
   | <PPETITOUE: "<=" >
-  | <NAN: "NaN" >
-  | <NOMBRESCI: <NOMBRE> "e" ("-")? (["0"-"9"])+ >
-  | <PGRANDOUE: ">=" >
 }
 
-void mainNT () :
-{}
-{ expression() <EOL> }
+//Pour les tests sur le fichier test il faut que True et False commence par un majuscule et pas une minuscule
 
-void expression () :
-{}
-{ terme()
-    ("+" terme()
-    | "-" terme()
-    |<EGALITE> terme()
-    |<PPETITOUE> terme()
-    |<PGRANDOUE> terme()
-    | "!" terme()
-    | "<" terme()
-    | ">" terme()
-    )*
+ExpressionA mainNT () :
+{
+    ExpressionA e;
+}
+{ (e=expression()) <EOL> {return e;}}
+
+ExpressionA expression () :
+{
+    ExpressionA gauche;
+    ExpressionA droite;
+    ExpressionA res;
+}
+{ gauche=terme() {res=gauche;}
+    ("+" (droite=terme()) {gauche=new Plus(gauche, droite); res=gauche;}
+    | "-" (droite=terme()) {gauche=new Moins(gauche, droite); res=gauche;}
+    |<EGALITE> droite=terme() {gauche=new Egalite(gauche, droite); res=gauche;}
+    |<PPETITOUE> droite=terme() {gauche=new PPetitE(gauche, droite); res=gauche;}
+    )* {return res;}
 }
 
-void terme () :
-{}
-{ facteur()
-    ("*" facteur()
-    |"/" facteur()
-    )*
+ExpressionA terme () :
+{
+    ExpressionA gauche;
+    ExpressionA droite;
+    ExpressionA res;
+}
+{ gauche=facteur() {res=gauche;}
+    ("*" (droite=facteur()) {gauche=new Mult(gauche, droite); res=gauche;}
+    |"/" (droite=facteur()) {gauche=new Div(gauche, droite); res=gauche;}
+    )* {return res;}
 }
 
-void facteur () :
-{}
-{   "(" expression() ")"
-    |"-" facteur()
-    |<NOMBRE>
-    |<NOMBRESCI>
-    |<NAN>
-    |<BOOLEAN>
+ExpressionA facteur () :
+{
+    ExpressionA e;
+    Token t;
+}
+{ "(" (e=expression()) ")" {return e;}
+    | "-" (e=facteur()) {return new Neg(e);}
+    | t=<NOMBRE> {return new Num(Float.parseFloat(t.image));}
+    | t=<BOOLEAN> {return new Bool(Boolean.parseBoolean(t.image));}
 }
