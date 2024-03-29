@@ -13,5 +13,4 @@ public class Plus extends ExpressionA_Binaire {
 
         return asb;
     }
-
 }

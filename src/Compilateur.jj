@@ -21,7 +21,7 @@ public class Compilateur {
             ExpressionA eA=parseur.mainNT();
             String pathJSM=createFile(args[0]);
 
-            writeFile(pathJSM, eA.toAssembly());
+            writeFile(pathJSM, eA.toAssembly()+"\nHALT");
         } catch (TokenMgrError e) {
             //System.out.println("Token Ceci n'est pas une expression arithm\u00e9thique");
             e.printStackTrace();
