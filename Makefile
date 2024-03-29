@@ -7,7 +7,7 @@ AST_DIR = src/AST
 
 all:
 	$(JAVACC) -OUTPUT_DIRECTORY=$(OUT_DIR_JCC) $(FILE_JJ)
-	$(JAVAC) $(AST_DIR)/*.java $(SRC_DIR)/*.java
+	$(JAVAC) $(SRC_DIR)/AST/*.java $(SRC_DIR)/*.java
 
 clean:
 	rm -rf $(SRC_DIR)
