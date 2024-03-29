@@ -63,8 +63,6 @@ void facteur () :
 {}
 {   "(" expression() ")"
     |"-" facteur()
-    |<NOMBRE>
-    |<NOMBRESCI>
-    |<NAN>
+    |(<NOMBRE> | <NOMBRESCI> | <NAN>)
     |<BOOLEAN>
 }
