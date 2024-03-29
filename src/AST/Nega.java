@@ -8,7 +8,7 @@ public class Nega extends ExpressionA{
     }
 
     public String toString() {
-        return String.format("not", arg.toString());
+        return String.format("not(%1$s)", arg.toString());
     }
 
     public String toAssembly(){

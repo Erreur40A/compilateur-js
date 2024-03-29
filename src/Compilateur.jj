@@ -28,6 +28,7 @@ TOKEN :
   //Priorité boolean: +,-,*,/ prioritaire sur ==, <=
   | <BOOLEAN: "True" | "False" > 
   | <EGALITE: "==" >
+  | <DIFFERENT: "!=" >
   | <PPETITOUE: "<=" >
   | <PGRANDOUE: ">=" >
   | <NAN: "NaN" >
@@ -51,12 +52,12 @@ ExpressionA expression () :
 { gauche=terme() {res=gauche;}
     ("+" (droite=terme()) {gauche=new Plus(gauche, droite); res=gauche;}
     | "-" (droite=terme()) {gauche=new Moins(gauche, droite); res=gauche;}
-    |<EGALITE> droite=terme() {gauche=new Egalite(gauche, droite); res=gauche;}
-    |<PPETITOUE> droite=terme() {gauche=new PPetitE(gauche, droite); res=gauche;}
-    |<PGRANDOUE> terme()
-    | "!" terme()
-    | "<" terme()
-    | ">" terme()
+    |<EGALITE> (droite=terme()) {gauche=new Egalite(gauche, droite); res=gauche;}
+    |<PPETITOUE> (droite=terme()) {gauche=new PPetitE(gauche, droite); res=gauche;}
+    |<PGRANDOUE> (droite=terme()) {gauche=new PGrandE(gauche, droite); res=gauche;}
+    |<DIFFERENT> (droite=terme()) {gauche=new NotEq(gauche, droite); res=gauche;}
+    | "<" (droite=terme()) {gauche=new PPetit(gauche, droite); res=gauche;}
+    | ">" (droite=terme()) {gauche=new PGrand(gauche, droite); res=gauche;}
     )* {return res;}
 }
 
@@ -79,6 +80,7 @@ ExpressionA facteur () :
 }
 { "(" (e=expression()) ")" {return e;}
     | "-" (e=facteur()) {return new Neg(e);}
+    | "!" (e=facteur()) {return new Nega(e);}
     | t=<NOMBRE> {return new Num(Float.parseFloat(t.image));}
     | t=<NOMBRESCI> {return new Num(Float.parseFloat(t.image));}
     | t=<NAN> {return new Num(Float.parseFloat(t.image));}
