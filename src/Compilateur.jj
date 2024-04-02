@@ -69,7 +69,7 @@ ExpressionA expression () :
     ExpressionA droite;
     ExpressionA res;
 }
-{ gauche=terme() {res=gauche;}
+{ (gauche=terme() {res=gauche;}
     ("+" (droite=terme()) {gauche=new Plus(gauche, droite); res=gauche;}
     | "-" (droite=terme()) {gauche=new Moins(gauche, droite); res=gauche;}
     |<EGALITE> (droite=terme()) {gauche=new Egalite(gauche, droite); res=gauche;}
@@ -78,7 +78,8 @@ ExpressionA expression () :
     |<DIFFERENT> (droite=terme()) {gauche=new NotEq(gauche, droite); res=gauche;}
     | "<" (droite=terme()) {gauche=new PPetit(gauche, droite); res=gauche;}
     | ">" (droite=terme()) {gauche=new PGrand(gauche, droite); res=gauche;}
-    )* {return res;}
+    )* {return res;})
+  |importer()
 }
 
 ExpressionA terme () :
@@ -105,4 +106,13 @@ ExpressionA facteur () :
     | t=<NOMBRESCI> {return new Num(Float.parseFloat(t.image));}
     | t=<NAN> {return new Num(Float.parseFloat(t.image));}
     | t=<BOOLEAN> {return new Bool(Boolean.parseBoolean(t.image));}
+}
+
+ExpressionA importer () :
+{
+    Token com;
+    Token arg;
+}
+{
+    (com=<COMMANDE>) (arg=<IDENTIFIANT>) {return new Import(com.image, arg.image);}
 }
