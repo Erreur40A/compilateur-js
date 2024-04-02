@@ -51,6 +51,7 @@ TOKEN :
   | <PGRANDOUE: ">=" >
   | <NAN: "NaN" >
   | <NOMBRESCI: <NOMBRE> "e" ("-")? (["0"-"9"])+ >
+  | <COMMANDE: "import" >
   | <IDENTIFIANT: (["a"-"z"] | ["A"-"Z"] | "$" | "_") (["a"-"z"] | ["A"-"Z"] | ["1"-"9"] | "$" | "_")* >
 }
 
@@ -60,7 +61,7 @@ void mainNT () :
 
 void expression () :
 {}
-{ terme()
+{ (terme()
     ("+" terme()
     | "-" terme()
     |<EGALITE> terme()
@@ -69,7 +70,8 @@ void expression () :
     | "!" terme()
     | "<" terme()
     | ">" terme()
-    )*
+    )*)
+  |importer()
 }
 
 void terme () :
@@ -86,4 +88,10 @@ void facteur () :
     |"-" facteur()
     |(<NOMBRE> | <NOMBRESCI> | <NAN>)
     |<BOOLEAN>
+}
+
+void importer () :
+{}
+{
+    <COMMANDE> <IDENTIFIANT>
 }
