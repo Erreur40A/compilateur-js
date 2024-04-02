@@ -1,34 +1,67 @@
+options {
+    static = false;
+}
+
 PARSER_BEGIN(Compilateur)
 
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.File;
+import java.io.*;
+import java.util.ArrayList;
 import AST.*;
 
 public class Compilateur {
-    public static void main(String[] args) {
+    public static void main(String[] args){
         if(args.length != 1){
-           throw new IllegalArgumentException("Il faut obligatoirement UN FICHIER en argument");
+            throw new IllegalArgumentException("Il faut obligatoirement UN FICHIER en argument");
         }
+
+        BufferedReader reader = readerFile(args[0]);
+        String pathJSM = createFile(args[0]);
+        ArrayList<String> line = new ArrayList<String>();
+        String assembleur=null;
+        viderFile(pathJSM);
 
         try {
-            BufferedReader reader = readerFile(args[0]);
-            Compilateur parseur = new Compilateur(reader);
-            ExpressionA eA=parseur.mainNT();
-            String pathJSM=createFile(args[0]);
+            while((line=splitLine(reader)) != null){
+                for (String item : line) {
+                    Compilateur parseur = new Compilateur(new StringReader(item));
+                    ExpressionA eA = parseur.mainNT();
 
-            writeFile(pathJSM, eA.toAssembly()+"\nHALT");
-        } catch (TokenMgrError e) {
-            //System.out.println("Token Ceci n'est pas une expression arithm\u00e9thique");
+                    if(eA!=null)
+                        writeFile(pathJSM, eA.toAssembly());
+                }
+            }
+        }catch (TokenMgrError e){
             e.printStackTrace();
-        } catch (ParseException e){
-            //System.out.println("Parseur Ceci n'est pas une expression arithm\u00e9thique");
+        }catch (ParseException e){
             e.printStackTrace();
         }
+    }
+
+    public static ArrayList<String> splitLine(BufferedReader reader){
+        ArrayList<String> items = new ArrayList<String>();
+        String line=readerLine(reader);
+
+        if(line!=null)
+            for(String item : line.split(";")){
+                item=item.replaceAll("[\n\\s\t]","");
+                item+=";";
+                items.add(item);
+            }
+        else
+            return null;
+
+        return items;
+    }
+
+    public static String readerLine(BufferedReader reader){
+        String res=null;
+        try {
+            res = reader.readLine();
+        }catch (IOException e) {
+            System.out.println("readLine: " + e.getMessage());
+        }
+
+        return res;
     }
 
     public static BufferedReader readerFile(String pathFile){
@@ -58,22 +91,46 @@ public class Compilateur {
         return f.getPath();
     }
 
+    public static void closeBufferedReader(BufferedReader reader){
+        if (reader != null) {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                System.out.println("closeBufferedReader: " + e.getMessage());
+            }
+        }
+    }
+
     public static void closeBufferedWriter(BufferedWriter writer){
         if (writer != null) {
             try {
                 writer.close();
             } catch (IOException e) {
-                System.out.println("writeFile fermeture buffeur : " + e.getMessage());
+                System.out.println("closeBufferedWriter: " + e.getMessage());
             }
+        }
+    }
+
+    public static void viderFile(String path){
+        BufferedWriter vider_contenue = null;
+
+        try {
+            vider_contenue = new BufferedWriter(new FileWriter(path, false));
+            vider_contenue.write("");
+        } catch (IOException e) {
+            System.out.println("viderFile: " + e.getMessage());
+        } finally {
+            closeBufferedWriter(vider_contenue);
         }
     }
 
     public static void writeFile(String path, String contenu){
         BufferedWriter writer = null;
-
+        
         try {
-            writer = new BufferedWriter(new FileWriter(path));
+            writer = new BufferedWriter(new FileWriter(path, true));
             writer.write(contenu);
+            writer.newLine();
         } catch (IOException e) {
             System.out.println("writeFile ecrire contenue: " + e.getMessage());
         } finally {
@@ -87,16 +144,12 @@ SKIP :
 { " " | "\t" | "\n" }
 
 TOKEN :
-{ < NOMBRE: (["0"-"9"])+ ("." (["0"-"9"])*)? >
+{ < NOMBRE: (["0"-"9"]) (["0"-"9"])* (["."])? (["0"-"9"])* >
   | <EOL: ";" >
   //Priorité boolean: +,-,*,/ prioritaire sur ==, <=
   | <BOOLEAN: "True" | "False" > 
   | <EGALITE: "==" >
-  | <DIFFERENT: "!=" >
   | <PPETITOUE: "<=" >
-  | <PGRANDOUE: ">=" >
-  | <NAN: "NaN" >
-  | <NOMBRESCI: <NOMBRE> "e" ("-")? (["0"-"9"])+ >
 }
 
 //Pour les tests sur le fichier test il faut que True et False commence par un majuscule et pas une minuscule
@@ -105,7 +158,9 @@ ExpressionA mainNT () :
 {
     ExpressionA e;
 }
-{ (e=expression()) <EOL> {return e;}}
+{   (e=expression()) <EOL> {return e;}
+    | <EOL> {return null;}
+}
 
 ExpressionA expression () :
 {
@@ -116,12 +171,8 @@ ExpressionA expression () :
 { gauche=terme() {res=gauche;}
     ("+" (droite=terme()) {gauche=new Plus(gauche, droite); res=gauche;}
     | "-" (droite=terme()) {gauche=new Moins(gauche, droite); res=gauche;}
-    |<EGALITE> (droite=terme()) {gauche=new Egalite(gauche, droite); res=gauche;}
-    |<PPETITOUE> (droite=terme()) {gauche=new PPetitE(gauche, droite); res=gauche;}
-    |<PGRANDOUE> (droite=terme()) {gauche=new PGrandE(gauche, droite); res=gauche;}
-    |<DIFFERENT> (droite=terme()) {gauche=new NotEq(gauche, droite); res=gauche;}
-    | "<" (droite=terme()) {gauche=new PPetit(gauche, droite); res=gauche;}
-    | ">" (droite=terme()) {gauche=new PGrand(gauche, droite); res=gauche;}
+    |<EGALITE> droite=terme() {gauche=new Egalite(gauche, droite); res=gauche;}
+    |<PPETITOUE> droite=terme() {gauche=new PPetitE(gauche, droite); res=gauche;}
     )* {return res;}
 }
 
@@ -144,9 +195,6 @@ ExpressionA facteur () :
 }
 { "(" (e=expression()) ")" {return e;}
     | "-" (e=facteur()) {return new Neg(e);}
-    | "!" (e=facteur()) {return new Nega(e);}
     | t=<NOMBRE> {return new Num(Float.parseFloat(t.image));}
-    | t=<NOMBRESCI> {return new Num(Float.parseFloat(t.image));}
-    | t=<NAN> {return new Num(Float.parseFloat(t.image));}
     | t=<BOOLEAN> {return new Bool(Boolean.parseBoolean(t.image));}
 }
