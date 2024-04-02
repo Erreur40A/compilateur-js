@@ -51,6 +51,7 @@ TOKEN :
   | <PGRANDOUE: ">=" >
   | <NAN: "NaN" >
   | <NOMBRESCI: <NOMBRE> "e" ("-")? (["0"-"9"])+ >
+  | <IDENTIFIANT: (["a"-"z"] | ["A"-"Z"] | "$" | "_") (["a"-"z"] | ["A"-"Z"] | ["1"-"9"] | "$" | "_")* >
 }
 
 void mainNT () :
