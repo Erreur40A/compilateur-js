@@ -20,7 +20,27 @@ public class Compilateur {
 PARSER_END(Compilateur)
 
 SKIP :
-{ " " | "\t" | "\n" }
+{ " " | "\t" | "\n" | "//" : FinComMonoLn | "/*" : FinComMultiLn}
+
+<FinComMonoLn> SKIP :
+{
+    "\n" : DEFAULT
+}
+
+<FinComMultiLn> SKIP :
+{
+    "*/" : DEFAULT
+}
+
+<FinComMonoLn> MORE :
+{
+  <~[]>
+}
+
+<FinComMultiLn> MORE :
+{
+  <~[]>
+}
 
 TOKEN :
 { < NOMBRE: (["0"-"9"])+ ("." (["0"-"9"])*)? >
