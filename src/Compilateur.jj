@@ -114,5 +114,5 @@ ExpressionA importer () :
     Token arg;
 }
 {
-    (com=<COMMANDE>) (arg=<IDENTIFIANT>) {return new Import(com.image, arg.image);}
+    <COMMANDE> <IDENTIFIANT> ".jsm"
 }
