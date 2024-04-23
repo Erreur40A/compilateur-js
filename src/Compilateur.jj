@@ -86,14 +86,12 @@ void facteur () :
 {}
 {   "(" expression() ")"
     |"-" facteur()
-    |<NOMBRE>
-    |<NOMBRESCI>
-    |<NAN>
+    |(<NOMBRE> | <NOMBRESCI> | <NAN>)
     |<BOOLEAN>
 }
 
 void importer () :
 {}
 {
-    <COMMANDE> <IDENTIFIANT>
+    <COMMANDE> <IDENTIFIANT> ".jsm"
 }
