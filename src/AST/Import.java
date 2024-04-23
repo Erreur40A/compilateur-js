@@ -4,8 +4,9 @@ public class Import extends ExpressionA{
     String commande;
     String argument;
 
-    Import(String com, String arg){
-        super();
+    //A FAIRE
+    public Import(String com, String arg){
+        super(0);
         commande=com;
         argument=arg;
     }

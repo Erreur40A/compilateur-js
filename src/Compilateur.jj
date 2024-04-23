@@ -111,11 +111,12 @@ ExpressionA facteur () :
     | t=<BOOLEAN> {return new Bool(Boolean.parseBoolean(t.image));}
 }
 
+//A FAIRE
 ExpressionA importer () :
 {
     Token com;
     Token arg;
 }
 {
-    <COMMANDE> <IDENTIFIANT> ".jsm"
+    (com=<COMMANDE>) (arg=<IDENTIFIANT>) ".jsm" {return new Import(com.image, arg.image);}
 }
