@@ -53,6 +53,9 @@ TOKEN :
   | <PGRANDOUE: ">=" >
   | <NAN: "NaN" >
   | <NOMBRESCI: <NOMBRE> "e" ("-")? (["0"-"9"])+ >
+  | <COMMANDE: "import" >
+  | <IDENTIFIANT: (["a"-"z"] | ["A"-"Z"] | "$" | "_") (["a"-"z"] | ["A"-"Z"] | ["1"-"9"] | "$" | "_")* >
+
 }
 
 //Pour les tests sur le fichier test il faut que True et False commence par un majuscule et pas une minuscule
