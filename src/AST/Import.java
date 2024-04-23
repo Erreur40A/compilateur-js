@@ -6,7 +6,7 @@ public class Import extends ExpressionA{
 
     //A FAIRE
     public Import(String com, String arg){
-        super(0);
+        super(0);//0 pour l'instant mais a modifié
         commande=com;
         argument=arg;
     }

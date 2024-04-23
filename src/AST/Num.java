@@ -4,6 +4,7 @@ public class Num extends ExpressionA {
   public float num;
     
   public Num(float num) {
+    super(1);
     this.num = num;
   }
   
