@@ -93,5 +93,5 @@ void facteur () :
 void importer () :
 {}
 {
-    <COMMANDE> <IDENTIFIANT>
+    <COMMANDE> <IDENTIFIANT> ".jsm"
 }
