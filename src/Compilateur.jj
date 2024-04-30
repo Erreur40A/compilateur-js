@@ -52,13 +52,25 @@ TOKEN :
   | <ET: "&&" >
   | <NAN: "NaN" >
   | <NOMBRESCI: <NOMBRE> "e" ("-")? (["0"-"9"])+ >
-  | <COMMANDE: "import" >
+  | <IMPORT: "import" >
   | <IDENTIFIANT: (["a"-"z"] | ["A"-"Z"] | "$" | "_") (["a"-"z"] | ["A"-"Z"] | ["1"-"9"] | "$" | "_")* >
 }
 
+//correspond a <program> dans grammaire enoncé projet
 void mainNT () :
 {}
-{ expression() <EOL> }
+{
+ ( "" | command() )
+}
+
+void command() :
+{}
+{
+  (expression()
+   |"import" <IDENTIFIANT>
+   |<IDENTIFIANT> "=" expression() 
+  ) <EOL>
+}
 
 void expression () :
 {}
@@ -72,8 +84,10 @@ void expression () :
     | "<" terme()
     | ">" terme()
     | <ET> terme()
-    )*)
-  |importer()
+    | <IDENTIFIANT> "=" expression()
+    )*
+  
+  )
 }
 
 void terme () :
@@ -90,10 +104,5 @@ void facteur () :
     |"-" facteur()
     |(<NOMBRE> | <NOMBRESCI> | <NAN>)
     |<BOOLEAN>
-}
-
-void importer () :
-{}
-{
-    <COMMANDE> <IDENTIFIANT> ".jsm"
+    |<IDENTIFIANT>
 }
