@@ -1,9 +1,10 @@
 package AST;
 
 public class Bool extends ExpressionA{
-    public boolean b;
+    boolean b;
 
     public Bool(boolean b){
+        super(1);
         this.b=b;
     }
 

@@ -7,6 +7,7 @@ abstract class ExpressionA_Binaire extends ExpressionA {
   ExpressionA droite;
 
   ExpressionA_Binaire (ExpressionA gauche,ExpressionA droite) {
+    super(gauche.size+droite.size+1);
     this.gauche = gauche;
     this.droite = droite;
   }
