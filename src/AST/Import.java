@@ -1,5 +1,11 @@
 package AST;
 
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Scanner;
+
 public class Import extends ExpressionA{
     String commande;
     String argument;
@@ -13,23 +19,26 @@ public class Import extends ExpressionA{
 
     public String toAssembly(){
         //lire le fichier arg et retourner son contenu
-	String asb=null;
-	StringBuilder res = new StringBuilder();
+	StringBuilder asb = new StringBuilder();
+	String line;
+
 	try{
 		FileReader fich = new FileReader(argument+".jsm");
-        	BufferedReader r = new BufferedReader(fich);
+        BufferedReader r = new BufferedReader(fich);
         	
-		while((line = r.readline()) != null) {
-			res.append(line).append("\n");
+		while((line = r.readLine()) != null) {
+			asb.append(line).append("\n");
 		}        		
+
+		r.close();
 	}catch(IOException e) {
 		System.out.println("readLine: " + e.getMessage());
 	}
-	asb = res.toString();
-        return asb;
+	
+    return asb.toString();
     }
     
-    public int lineNo(String arg){
+    public static int lineNo(String arg){
     	int count = 0;
     	try{
     		File fich = new File(arg+".jsm");
