@@ -203,6 +203,7 @@ ExpressionA expression () :
     |<DIFFERENT> (droite=terme()) {gauche=new NotEq(gauche, droite); res=gauche;}
     | "<" (droite=terme()) {gauche=new PPetit(gauche, droite); res=gauche;}
     | ">" (droite=terme()) {gauche=new PGrand(gauche, droite); res=gauche;}
+    | <ET> (droite=terme()) {gauche=new Et(gauche, droite); res=gauche;}
     )* {return res;})
   |importer()
 }

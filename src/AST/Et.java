@@ -1,8 +1,8 @@
 package AST;
 
 public class Et extends ExpressionA_Binaire{
-    public Et(ExpressionA d, ExpressionA g){
-        super(d, g);
+    public Et(ExpressionA g, ExpressionA d){
+        super(g, d);
     }
 
     public String symbole() {return "&&";}
@@ -12,7 +12,7 @@ public class Et extends ExpressionA_Binaire{
                    "ConJmp "+ (droite.size + 1) + "\n" +
                    droite.toAssembly() + "\n" +
                    "Jump 1\n" +
-                   "CsteBo False\n";
+                   "CsteBo False";
 
         return asb;
     }
