@@ -2,10 +2,6 @@ options {
     static = false;
 }
 
-options {
-    static = false;
-}
-
 PARSER_BEGIN(Compilateur)
 
 import java.io.*;
