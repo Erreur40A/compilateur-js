@@ -8,7 +8,7 @@ public class PGrand extends ExpressionA_Binaire{
     public String toAssembly(){
         String asb=gauche.toAssembly() + "\n" +
                    droite.toAssembly() + "\n" +
-                   "GrEqSt";
+                   "GrStNb";
 
         return asb;
     }
