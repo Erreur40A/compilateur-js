@@ -167,11 +167,12 @@ TOKEN :
 { < NOMBRE: (["0"-"9"])+ ("." (["0"-"9"])*)? >
   | <EOL: ";" >
   //Priorité boolean: +,-,*,/ prioritaire sur ==, <=
-  | <BOOLEAN: "True" | "False" > 
+  | <BOOLEAN: "True" | "False" | "true" | "false"> 
   | <EGALITE: "==" >
   | <DIFFERENT: "!=" >
   | <PPETITOUE: "<=" >
   | <PGRANDOUE: ">=" >
+  | <ET: "&&" >
   | <NAN: "NaN" >
   | <NOMBRESCI: <NOMBRE> "e" ("-")? (["0"-"9"])+ >
   | <COMMANDE: "import" >
