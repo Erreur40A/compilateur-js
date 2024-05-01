@@ -17,7 +17,9 @@ public class Compilateur {
 
             ExpressionA eA;
             eA = parseur.mainNT();
-            bw.write(eA.toAssembly());
+            
+            if(eA!=null)
+                bw.write(eA.toAssembly());
 
             bw.close();
 
