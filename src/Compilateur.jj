@@ -5,9 +5,6 @@ options {
 PARSER_BEGIN(Compilateur)
 
 import java.io.*;
-import java.util.ArrayList;
-import java.io.*;
-import java.util.ArrayList;
 import AST.*;
 
 public class Compilateur {
@@ -16,127 +13,30 @@ public class Compilateur {
             throw new IllegalArgumentException("Il faut obligatoirement UN FICHIER en argument");
         }
 
-        BufferedReader reader = readerFile(args[0]);
-        String pathJSM = createFile(args[0]);
-        ArrayList<String> line = new ArrayList<String>();
-        String assembleur=null;
-        viderFile(pathJSM);
-
         try {
-            while((line=splitLine(reader)) != null){
-                for (String item : line) {
-                    Compilateur parseur = new Compilateur(new StringReader(item));
-                    ExpressionA eA = parseur.mainNT();
+            BufferedReader br = new BufferedReader(new FileReader(args[0]));
+            Compilateur parseur = new Compilateur(br);
 
-                    if(eA!=null)
-                        writeFile(pathJSM, eA.toAssembly());
-                }
+            ExpressionA eA;
+            
+            /*while((eA=parseur.mainNT()) != null){
+                System.out.println(eA);
+            }*/
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                parseur.ReInit(new StringReader(line));
+                
+                eA = parseur.mainNT();
+                System.out.println(eA);
             }
+
         }catch (TokenMgrError e){
             e.printStackTrace();
         }catch (ParseException e){
             e.printStackTrace();
-        }
-    }
-
-    public static ArrayList<String> splitLine(BufferedReader reader){
-        ArrayList<String> items = new ArrayList<String>();
-        String line=readerLine(reader);
-
-        if(line!=null)
-            for(String item : line.split(";")){
-                item=item.replaceAll("[\n\\s\t]","");
-                item+=";";
-                items.add(item);
-            }
-        else
-            return null;
-
-        return items;
-    }
-
-    public static String readerLine(BufferedReader reader){
-        String res=null;
-        try {
-            res = reader.readLine();
-        }catch (IOException e) {
-            System.out.println("readLine: " + e.getMessage());
-        }
-
-        return res;
-    }
-
-    public static BufferedReader readerFile(String pathFile){
-        BufferedReader res=null;
-        try {
-            FileReader f = new FileReader(pathFile);
-            res = new BufferedReader(f);
-        }catch (IOException e) {
-            System.out.println("readFile: " + e.getMessage());
-        }
-
-        return res;
-    }
-
-    public static String createFile(String path){
-        path = path + ".jsm";
-        File f = new File(path);
-
-        if(!f.exists()){
-            try {
-                f.createNewFile();
-            } catch (IOException e) {
-                return f.getPath();
-            }
-        }
-
-        return f.getPath();
-    }
-
-    public static void closeBufferedReader(BufferedReader reader){
-        if (reader != null) {
-            try {
-                reader.close();
-            } catch (IOException e) {
-                System.out.println("closeBufferedReader: " + e.getMessage());
-            }
-        }
-    }
-
-    public static void closeBufferedWriter(BufferedWriter writer){
-        if (writer != null) {
-            try {
-                writer.close();
-            } catch (IOException e) {
-                System.out.println("closeBufferedWriter: " + e.getMessage());
-            }
-        }
-    }
-
-    public static void viderFile(String path){
-        BufferedWriter vider_contenue = null;
-
-        try {
-            vider_contenue = new BufferedWriter(new FileWriter(path, false));
-            vider_contenue.write("");
-        } catch (IOException e) {
-            System.out.println("viderFile: " + e.getMessage());
-        } finally {
-            closeBufferedWriter(vider_contenue);
-        }
-    }
-
-    public static void writeFile(String path, String contenu){
-        BufferedWriter writer = null;
-        
-        try {
-            writer = new BufferedWriter(new FileWriter(path, true));
-            writer.write(contenu);
-            writer.newLine();
-        } catch (IOException e) {
-            System.out.println("writeFile ecrire contenue: " + e.getMessage());
-        } finally {
-            closeBufferedWriter(writer);
+        }catch (IOException e){
+            e.printStackTrace();
         }
     }
 }
@@ -167,9 +67,8 @@ SKIP :
 
 TOKEN :
 { < NOMBRE: (["0"-"9"])+ ("." (["0"-"9"])*)? >
-  | <EOL: ";" >
   //Priorité boolean: +,-,*,/ prioritaire sur ==, <=
-  | <BOOLEAN: "True" | "False" | "true" | "false"> 
+  | <BOOLEAN: "True" | "False" | "true" | "false" > 
   | <EGALITE: "==" >
   | <DIFFERENT: "!=" >
   | <PPETITOUE: "<=" >
@@ -179,16 +78,31 @@ TOKEN :
   | <NOMBRESCI: <NOMBRE> "e" ("-")? (["0"-"9"])+ >
   | <COMMANDE: "import" >
   | <IDENTIFIANT: (["a"-"z"] | ["A"-"Z"] | "$" | "_") (["a"-"z"] | ["A"-"Z"] | ["1"-"9"] | "$" | "_")* >
-
 }
-
-//Pour les tests sur le fichier test il faut que True et False commence par un majuscule et pas une minuscule
 
 ExpressionA mainNT () :
 {
     ExpressionA e;
 }
-{ (e=expression()) <EOL> {return e;}}
+{ (e=program()) {return e;}
+}
+
+ExpressionA program () :
+{
+    ExpressionA e;
+}
+{
+    (<EOF> {return null;}
+    |(e=command()) program()) {return e;}
+}
+
+ExpressionA command () :
+{
+    ExpressionA e;
+}
+{
+  (e=expression()) ";" {return e;}
+}
 
 ExpressionA expression () :
 {
@@ -207,7 +121,6 @@ ExpressionA expression () :
     | ">" (droite=terme()) {gauche=new PGrand(gauche, droite); res=gauche;}
     | <ET> (droite=terme()) {gauche=new Et(gauche, droite); res=gauche;}
     )* {return res;})
-  |importer()
 }
 
 ExpressionA terme () :
@@ -234,14 +147,4 @@ ExpressionA facteur () :
     | t=<NOMBRESCI> {return new Num(Float.parseFloat(t.image));}
     | t=<NAN> {return new Num(Float.parseFloat(t.image));}
     | t=<BOOLEAN> {return new Bool(Boolean.parseBoolean(t.image));}
-}
-
-//A FAIRE
-ExpressionA importer () :
-{
-    Token com;
-    Token arg;
-}
-{
-    (com=<COMMANDE>) (arg=<IDENTIFIANT>) ".jsm" {return new Import(com.image, arg.image);}
 }
