@@ -43,8 +43,8 @@ SKIP :
 
 TOKEN :
 { < NOMBRE: (["0"-"9"])+ ("." (["0"-"9"])*)? >
-  | <EOL: ";" >
   //Priorité boolean: +,-,*,/ prioritaire sur ==, <=
+  | <EOL: "\n\n">
   | <BOOLEAN: "True" | "False" | "true" | "false"> 
   | <EGALITE: "==" >
   | <PPETITOUE: "<=" >
@@ -52,17 +52,33 @@ TOKEN :
   | <ET: "&&" >
   | <NAN: "NaN" >
   | <NOMBRESCI: <NOMBRE> "e" ("-")? (["0"-"9"])+ >
-  | <COMMANDE: "import" >
+  | <IMPORT: "import" >
   | <IDENTIFIANT: (["a"-"z"] | ["A"-"Z"] | "$" | "_") (["a"-"z"] | ["A"-"Z"] | ["1"-"9"] | "$" | "_")* >
 }
 
 void mainNT () :
 {}
-{ expression() <EOL> }
+{ 
+    program()
+}
+
+void program () :
+{}
+{
+    <EOL>
+    |command() (command())*
+}
+
+void command () :
+{}
+{
+    expression() ";"
+    |<IMPORT> <IDENTIFIANT> ";"
+}
 
 void expression () :
 {}
-{ (terme()
+{  terme()
     ("+" terme()
     | "-" terme()
     |<EGALITE> terme()
@@ -72,8 +88,7 @@ void expression () :
     | "<" terme()
     | ">" terme()
     | <ET> terme()
-    )*)
-  |importer()
+    )*
 }
 
 void terme () :
@@ -90,10 +105,5 @@ void facteur () :
     |"-" facteur()
     |(<NOMBRE> | <NOMBRESCI> | <NAN>)
     |<BOOLEAN>
-}
-
-void importer () :
-{}
-{
-    <COMMANDE> <IDENTIFIANT> ".jsm"
+    |<IDENTIFIANT>
 }
