@@ -43,7 +43,6 @@ SKIP :
 
 TOKEN :
 { < NOMBRE: (["0"-"9"])+ ("." (["0"-"9"])*)? >
-  | <EOL: ";" >
   //Priorité boolean: +,-,*,/ prioritaire sur ==, <=
   | <BOOLEAN: "True" | "False" | "true" | "false"> 
   | <EGALITE: "==" >
@@ -56,25 +55,29 @@ TOKEN :
   | <IDENTIFIANT: (["a"-"z"] | ["A"-"Z"] | "$" | "_") (["a"-"z"] | ["A"-"Z"] | ["1"-"9"] | "$" | "_")* >
 }
 
-//correspond a <program> dans grammaire enoncé projet
 void mainNT () :
 {}
-{
- ( "" | command() )
+{ 
+    program()
 }
 
-void command() :
+void program () :
 {}
 {
-  (expression()
-   |"import" <IDENTIFIANT>
-   |<IDENTIFIANT> "=" expression() 
-  ) <EOL>
+    <EOF>
+    |command() (command())*
+}
+
+void command () :
+{}
+{
+    expression() ";"
+    |<IMPORT> <IDENTIFIANT> ";"
 }
 
 void expression () :
 {}
-{ (terme()
+{ terme()
     ("+" terme()
     | "-" terme()
     |<EGALITE> terme()
@@ -84,10 +87,8 @@ void expression () :
     | "<" terme()
     | ">" terme()
     | <ET> terme()
-    | <IDENTIFIANT> "=" expression()
     )*
   
-  )
 }
 
 void terme () :
