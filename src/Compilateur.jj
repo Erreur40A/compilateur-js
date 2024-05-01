@@ -44,6 +44,7 @@ SKIP :
 TOKEN :
 { < NOMBRE: (["0"-"9"])+ ("." (["0"-"9"])*)? >
   //Priorité boolean: +,-,*,/ prioritaire sur ==, <=
+  | <EOL: "\n\n">
   | <BOOLEAN: "True" | "False" | "true" | "false"> 
   | <EGALITE: "==" >
   | <PPETITOUE: "<=" >
@@ -64,7 +65,7 @@ void mainNT () :
 void program () :
 {}
 {
-    <EOF>
+    <EOL>
     |command() (command())*
 }
 
@@ -77,7 +78,7 @@ void command () :
 
 void expression () :
 {}
-{ terme()
+{  terme()
     ("+" terme()
     | "-" terme()
     |<EGALITE> terme()
@@ -88,7 +89,6 @@ void expression () :
     | ">" terme()
     | <ET> terme()
     )*
-  
 }
 
 void terme () :
