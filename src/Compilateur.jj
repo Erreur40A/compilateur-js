@@ -53,7 +53,6 @@ SKIP :
 
 TOKEN :
 { < NOMBRE: (["0"-"9"])+ ("." (["0"-"9"])*)? >
-  | <EOL: ";" >
   //Priorité boolean: +,-,*,/ prioritaire sur ==, <=
   | <BOOLEAN: "True" | "False" | "true" | "false"> 
   | <EGALITE: "==" >
@@ -63,7 +62,7 @@ TOKEN :
   | <ET: "&&" >
   | <NAN: "NaN" >
   | <NOMBRESCI: <NOMBRE> "e" ("-")? (["0"-"9"])+ >
-  | <COMMANDE: "import" >
+  | <IMPORT: "import" >
   | <IDENTIFIANT: (["a"-"z"] | ["A"-"Z"] | "$" | "_") (["a"-"z"] | ["A"-"Z"] | ["1"-"9"] | "$" | "_")* >
 
 }
@@ -84,16 +83,18 @@ ExpressionA program () :
 }
 {
     (commande1=command() {prog.add(commande1);} 
-      (commande2=command() {prog.add(commande2);}
+     (commande2=command() {prog.add(commande2);}
     )* {return prog;})
 }
 
 ExpressionA command () :
 {
     ExpressionA e;
+    Token t;
 }
 {
     (e=expression()) ";" {return e;}
+    |<IMPORT> t=<IDENTIFIANT> ";" {return new Import(t.image);}
 }
 
 
@@ -115,7 +116,6 @@ ExpressionA expression () :
     | ">" (droite=terme()) {gauche=new PGrand(gauche, droite); res=gauche;}
     | <ET> (droite=terme()) {gauche=new Et(gauche, droite); res=gauche;}
     )* {return res;})
-  |importer()
 }
 
 ExpressionA terme () :
@@ -142,14 +142,4 @@ ExpressionA facteur () :
     | t=<NOMBRESCI> {return new Num(Float.parseFloat(t.image));}
     | t=<NAN> {return new Num(Float.parseFloat(t.image));}
     | t=<BOOLEAN> {return new Bool(Boolean.parseBoolean(t.image));}
-}
-
-//A FAIRE
-ExpressionA importer () :
-{
-    Token com;
-    Token arg;
-}
-{
-    (com=<COMMANDE>) (arg=<IDENTIFIANT>) ".jsm" {return new Import(com.image, arg.image);}
 }

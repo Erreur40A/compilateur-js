@@ -7,35 +7,32 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Import extends ExpressionA{
-    String commande;
     String argument;
 
-    //A FAIRE
-    public Import(String com, String arg){
+    public Import(String arg){
         super(lineNo(arg));
-        commande=com;
         argument=arg;
     }
 
     public String toAssembly(){
         //lire le fichier arg et retourner son contenu
-	StringBuilder asb = new StringBuilder();
-	String line;
+		StringBuilder asb = new StringBuilder();
+		String line;
 
-	try{
-		FileReader fich = new FileReader(argument+".jsm");
-        BufferedReader r = new BufferedReader(fich);
-        	
-		while((line = r.readLine()) != null) {
-			asb.append(line).append("\n");
-		}        		
+		try{
+			FileReader fich = new FileReader(argument+".jsm");
+			BufferedReader r = new BufferedReader(fich);
+				
+			while((line = r.readLine()) != null) {
+				asb.append(line).append("\n");
+			}        		
 
-		r.close();
-	}catch(IOException e) {
-		System.out.println("readLine: " + e.getMessage());
-	}
-	
-    return asb.toString();
+			r.close();
+		}catch(IOException e) {
+			System.out.println("readLine: " + e.getMessage());
+		}
+		
+		return asb.toString();
     }
     
     public static int lineNo(String arg){
@@ -54,4 +51,12 @@ public class Import extends ExpressionA{
     	}
     	return count;
     }
+
+	public String symbole(){
+		return "import";
+	}
+
+	public String toString(){
+		return symbole() +"(" + argument + ")";
+	}
 }

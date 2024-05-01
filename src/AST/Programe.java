@@ -36,13 +36,11 @@ public class Programe extends ExpressionA{
     public String toString(){
         String res=symbole() + "(";
 
-        res += commande.get(0);
-
-        for (int i = 1; i < commande.size(); i++) {
-            res += "," + commande.get(i).toString();
+        for (ExpressionA e : commande) {
+            res += "\n\t" + e.toString();
         }
 
-        res+=")";
+        res+="\n)";
 
         return res;
     }
