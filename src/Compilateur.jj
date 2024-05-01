@@ -11,15 +11,18 @@ import AST.*;
 public class Compilateur {
     public static void main(String[] args){
         try {
-            Compilateur parseur = new Compilateur(System.in);
+            BufferedReader br = new BufferedReader(new FileReader(args[0]));
+            Compilateur parseur = new Compilateur(br);
+
             ExpressionA eA=parseur.mainNT();
             System.out.println(eA);
+
         } catch (TokenMgrError e) {
             System.out.println("Token Ceci n'est pas une expression arithm\u00e9thique");
-            //e.printStackTrace();
         } catch (ParseException e){
             System.out.println("Parseur Ceci n'est pas une expression arithm\u00e9thique");
-            //e.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
         }
     }
 }
@@ -65,13 +68,35 @@ TOKEN :
 
 }
 
-//Pour les tests sur le fichier test il faut que True et False commence par un majuscule et pas une minuscule
-
 ExpressionA mainNT () :
 {
     ExpressionA e;
 }
-{ (e=expression()) <EOL> {return e;}}
+{ 
+    (e=program()) {return e;}
+}
+
+ExpressionA program () :
+{
+    ExpressionA commande1;
+    ExpressionA commande2;
+    Programe prog = new Programe();
+}
+{
+    (commande1=command() {prog.add(commande1);} 
+      (commande2=command() {prog.add(commande2);}
+    )* {return prog;})
+}
+
+ExpressionA command () :
+{
+    ExpressionA e;
+}
+{
+    (e=expression()) ";" {return e;}
+}
+
+
 
 ExpressionA expression () :
 {
