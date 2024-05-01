@@ -83,7 +83,7 @@ TOKEN :
   | <ET: "&&" >
   | <NAN: "NaN" >
   | <NOMBRESCI: <NOMBRE> "e" ("-")? (["0"-"9"])+ >
-  | <COMMANDE: "import" >
+  | <IMPORT: "import" >
   | <IDENTIFIANT: (["a"-"z"] | ["A"-"Z"] | "$" | "_") (["a"-"z"] | ["A"-"Z"] | ["1"-"9"] | "$" | "_")* >
 }
 
@@ -102,18 +102,23 @@ ExpressionA program () :
     Programe prog = new Programe();
 }
 {
-    (commande1=command() {prog.add(commande1);} 
-      (commande2=command() {prog.add(commande2);}
+    <EOF> {return null;}
+    |(commande1=command() {prog.add(commande1);} 
+     (commande2=command() {prog.add(commande2);}
     )* {return prog;})
 }
 
 ExpressionA command () :
 {
     ExpressionA e;
+    Token t;
 }
 {
     (e=expression()) ";" {return e;}
+    |<IMPORT> t=<IDENTIFIANT> ";" {return new Import(t.image);}
 }
+
+
 
 ExpressionA expression () :
 {
