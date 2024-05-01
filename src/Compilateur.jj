@@ -82,7 +82,8 @@ ExpressionA program () :
     Programe prog = new Programe();
 }
 {
-    (commande1=command() {prog.add(commande1);} 
+    <EOF> {return null;}
+    |(commande1=command() {prog.add(commande1);} 
      (commande2=command() {prog.add(commande2);}
     )* {return prog;})
 }
