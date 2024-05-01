@@ -1,7 +1,3 @@
-options {
-    static = false;
-}
-
 PARSER_BEGIN(Compilateur)
 
 import java.io.*;
@@ -16,20 +12,14 @@ public class Compilateur {
         try {
             BufferedReader br = new BufferedReader(new FileReader(args[0]));
             Compilateur parseur = new Compilateur(br);
+            String pathJSM = createFile(args[0]);
+            BufferedWriter bw = new BufferedWriter(new FileWriter(pathJSM));
 
             ExpressionA eA;
-            
-            /*while((eA=parseur.mainNT()) != null){
-                System.out.println(eA);
-            }*/
+            eA = parseur.mainNT();
+            bw.write(eA.toAssembly());
 
-            String line;
-            while ((line = br.readLine()) != null) {
-                parseur.ReInit(new StringReader(line));
-                
-                eA = parseur.mainNT();
-                System.out.println(eA);
-            }
+            bw.close();
 
         }catch (TokenMgrError e){
             e.printStackTrace();
@@ -39,7 +29,24 @@ public class Compilateur {
             e.printStackTrace();
         }
     }
+
+
+    public static String createFile(String path){
+        String pathJSM = path + ".jsm";
+        File jsm = new File(pathJSM);
+
+        if(!jsm.exists()){
+            try {
+                jsm.createNewFile();
+            } catch (IOException e) {
+                return jsm.getPath();
+            }
+        }
+
+        return jsm.getPath();
+    }
 }
+
 PARSER_END(Compilateur)
 
 SKIP :
@@ -84,16 +91,20 @@ ExpressionA mainNT () :
 {
     ExpressionA e;
 }
-{ (e=program()) {return e;}
+{ 
+    (e=program()) {return e;}
 }
 
 ExpressionA program () :
 {
-    ExpressionA e;
+    ExpressionA commande1;
+    ExpressionA commande2;
+    Programe prog = new Programe();
 }
 {
-    (<EOF> {return null;}
-    |(e=command()) program()) {return e;}
+    (commande1=command() {prog.add(commande1);} 
+      (commande2=command() {prog.add(commande2);}
+    )* {return prog;})
 }
 
 ExpressionA command () :
@@ -101,7 +112,7 @@ ExpressionA command () :
     ExpressionA e;
 }
 {
-  (e=expression()) ";" {return e;}
+    (e=expression()) ";" {return e;}
 }
 
 ExpressionA expression () :
