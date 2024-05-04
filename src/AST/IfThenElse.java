@@ -16,9 +16,10 @@ public class IfThenElse extends ExpressionA{
         StringBuilder asb = new StringBuilder();
 
         asb.append(condition.toAssembly());
-        asb.append("CondJmp ").append(blocIf.size + 1);
-        asb.append("\nJump ").append(blocElse.size);
-        asb.append("\n").append(blocElse.size);
+        asb.append("\nCondJmp ").append(blocIf.size + 1).append("\n");
+        asb.append(blocIf.toAssembly());
+        asb.append("\nJump ").append(blocElse.size).append("\n");
+        asb.append(blocElse.toAssembly());
 
         return asb.toString();
     }

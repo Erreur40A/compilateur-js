@@ -27,7 +27,7 @@ public class Programe extends ExpressionA{
         String asb = "";
 
         for (ExpressionA eA : commande) {
-            asb += eA.toAssembly() + "\n";
+            asb += eA.toAssembly();
         }
 
         return asb;
