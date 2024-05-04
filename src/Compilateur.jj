@@ -53,6 +53,9 @@ TOKEN :
   | <NAN: "NaN" >
   | <NOMBRESCI: <NOMBRE> "e" ("-")? (["0"-"9"])+ >
   | <IMPORT: "import" >
+  | <IF: "if" >
+  | <ELSE: "else" >
+  | <WHILE: "while" >
   | <IDENTIFIANT: (["a"-"z"] | ["A"-"Z"] | "$" | "_") (["a"-"z"] | ["A"-"Z"] | ["1"-"9"] | "$" | "_")* >
 }
 
@@ -74,6 +77,10 @@ void command () :
 {
     expression() ";"
     |<IMPORT> <IDENTIFIANT> ";"
+    |";"
+    |"{" program() "}"
+    |<IF> "(" expression() ")" command() <ELSE> command()
+    |<WHILE> "(" expression() ")" command()
 }
 
 void expression () :
