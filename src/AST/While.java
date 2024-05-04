@@ -13,6 +13,11 @@ public class While extends ExpressionA{
     public String toAssembly(){
         StringBuilder asb = new StringBuilder();
 
+        asb.append(condition.toAssembly());
+        asb.append("\nCondJmp ").append(bloc.size+1).append("\n");
+        asb.append(bloc.toAssembly());
+        asb.append("\nJump ").append(-condition.size - bloc.size - 2);
+
         return asb.toString();
     }
 
