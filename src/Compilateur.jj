@@ -105,6 +105,7 @@ ExpressionA command () :
     |";"
     |"{" e1=program() "}" {return e1;}
     |<IF> "(" (e1=expression()) ")" (e2=command()) <ELSE> (e3=command()) {return new IfThenElse(e1, e2, e3);}
+    |<WHILE> "(" (e1=expression()) ")" (e2=command()) { return new While(e1, e2);}
 }
 
 
