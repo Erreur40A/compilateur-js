@@ -25,6 +25,6 @@ public class IfThenElse extends ExpressionA{
     }
 
     public String toString() {
-        return String.format("\nif(%1$s)\nthen(%2$s)\nelse(%3$s)", condition.toString(), blocIf.toString(), blocElse.toString());
+        return String.format("if(%1$s) then(%2$s) else(%3$s)", condition.toString(), blocIf.toString(), blocElse.toString());
     }
 }

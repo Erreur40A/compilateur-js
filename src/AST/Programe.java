@@ -37,7 +37,7 @@ public class Programe extends ExpressionA{
         String res=symbole() + "(";
 
         for (ExpressionA e : commande) {
-            res += "\n\t" + e.toString();
+            res += "\n" + e.toString();
         }
 
         res+="\n)";
