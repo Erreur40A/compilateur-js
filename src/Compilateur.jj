@@ -77,7 +77,8 @@ SKIP :
 TOKEN :
 { < NOMBRE: (["0"-"9"])+ ("." (["0"-"9"])*)? >
   //Priorité boolean: +,-,*,/ prioritaire sur ==, <=
-  | <BOOLEAN: "True" | "False" | "true" | "false" > 
+  | <EOL: "\n\n">
+  | <BOOLEAN: "True" | "False" | "true" | "false"> 
   | <EGALITE: "==" >
   | <DIFFERENT: "!=" >
   | <PPETITOUE: "<=" >
@@ -86,6 +87,9 @@ TOKEN :
   | <NAN: "NaN" >
   | <NOMBRESCI: <NOMBRE> "e" ("-")? (["0"-"9"])+ >
   | <IMPORT: "import" >
+  | <IF: "if" >
+  | <ELSE: "else" >
+  | <WHILE: "while" >
   | <IDENTIFIANT: (["a"-"z"] | ["A"-"Z"] | "$" | "_") (["a"-"z"] | ["A"-"Z"] | ["1"-"9"] | "$" | "_")* >
 }
 
@@ -112,12 +116,17 @@ ExpressionA program () :
 
 ExpressionA command () :
 {
-    ExpressionA e;
+    ExpressionA e1;
+    ExpressionA e2;
+    ExpressionA e3;
     Token t;
 }
 {
-    (e=expression()) ";" {return e;}
+    (e1=expression()) ";" {return e1;}
     |<IMPORT> t=<IDENTIFIANT> ";" {return new Import(t.image);}
+    |";"
+    |"{" e1=program() "}" {return e1;}
+    |<IF> "(" (e1=expression()) ")" (e2=command()) <ELSE> (e3=command()) {return new IfThenElse(e1, e2, e3);}
 }
 
 
