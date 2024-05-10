@@ -11,9 +11,10 @@ public class Compilateur {
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(args[0]));
-            Compilateur parseur = new Compilateur(br);
             String pathJSM = createFile(args[0]);
             BufferedWriter bw = new BufferedWriter(new FileWriter(pathJSM));
+
+            Compilateur parseur = new Compilateur(br);
 
             ExpressionA eA;
             eA = parseur.mainNT();
@@ -21,13 +22,11 @@ public class Compilateur {
             if(eA!=null)
                 bw.write(eA.toAssembly());
 
-            bw.close();
-
-        }catch (TokenMgrError e){
-            e.printStackTrace();
-        }catch (ParseException e){
-            e.printStackTrace();
-        }catch (IOException e){
+        } catch (TokenMgrError e) {
+            System.out.println("Token Ceci n'est pas une expression arithm\u00e9thique");
+        } catch (ParseException e){
+            System.out.println("Parseur Ceci n'est pas une expression arithm\u00e9thique");
+        } catch (IOException e){
             e.printStackTrace();
         }
     }
@@ -90,6 +89,8 @@ TOKEN :
   | <IF: "if" >
   | <ELSE: "else" >
   | <WHILE: "while" >
+  | <FUNCTION: "function" >
+  | <RETURN: "return" >
   | <IDENTIFIANT: (["a"-"z"] | ["A"-"Z"] | "$" | "_") (["a"-"z"] | ["A"-"Z"] | ["1"-"9"] | "$" | "_")* >
 }
 
@@ -127,8 +128,18 @@ ExpressionA command () :
     |";"
     |"{" e1=program() "}" {return e1;}
     |<IF> "(" (e1=expression()) ")" (e2=command()) <ELSE> (e3=command()) {return new IfThenElse(e1, e2, e3);}
-    |<WHILE> "(" (e1=expression()) ")" (e2=command()) { return new While(e1, e2);}
+    |<WHILE> "(" (e1=expression()) ")" (e2=command()) {return new While(e1, e2);}
+    /*|<FUNCTION> (t=<IDENTIFIANT>) "(" delc_args() ")" "{" program() "}"
+    |<RETURN> expression() ";" {}*/
 }
+
+/*
+ExpressionA delc_args() :
+{}
+{
+    <IDENTIFIANT> ( "," <IDENTIFIANT> )*
+}
+*/
 
 ExpressionA expression () :
 {
@@ -139,10 +150,10 @@ ExpressionA expression () :
 { (gauche=terme() {res=gauche;}
     ("+" (droite=terme()) {gauche=new Plus(gauche, droite); res=gauche;}
     | "-" (droite=terme()) {gauche=new Moins(gauche, droite); res=gauche;}
-    |<EGALITE> (droite=terme()) {gauche=new Egalite(gauche, droite); res=gauche;}
-    |<PPETITOUE> (droite=terme()) {gauche=new PPetitE(gauche, droite); res=gauche;}
-    |<PGRANDOUE> (droite=terme()) {gauche=new PGrandE(gauche, droite); res=gauche;}
-    |<DIFFERENT> (droite=terme()) {gauche=new NotEq(gauche, droite); res=gauche;}
+    | <EGALITE> (droite=terme()) {gauche=new Egalite(gauche, droite); res=gauche;}
+    | <PPETITOUE> (droite=terme()) {gauche=new PPetitE(gauche, droite); res=gauche;}
+    | <PGRANDOUE> (droite=terme()) {gauche=new PGrandE(gauche, droite); res=gauche;}
+    | <DIFFERENT> (droite=terme()) {gauche=new NotEq(gauche, droite); res=gauche;}
     | "<" (droite=terme()) {gauche=new PPetit(gauche, droite); res=gauche;}
     | ">" (droite=terme()) {gauche=new PGrand(gauche, droite); res=gauche;}
     | <ET> (droite=terme()) {gauche=new Et(gauche, droite); res=gauche;}
@@ -171,6 +182,19 @@ ExpressionA facteur () :
     | "!" (e=facteur()) {return new Nega(e);}
     | t=<NOMBRE> {return new Num(Float.parseFloat(t.image));}
     | t=<NOMBRESCI> {return new Num(Float.parseFloat(t.image));}
-    | t=<NAN> {return new Num(Float.parseFloat(t.image));}
+    | t=<NAN>  {return new Num(Float.parseFloat(t.image));}
     | t=<BOOLEAN> {return new Bool(Boolean.parseBoolean(t.image));}
+    | (t=<IDENTIFIANT>) "(" (e=argument()) ")" {return new CallFonction(t.image, e);}
+}
+
+ExpressionA argument () :
+{
+    Argument arg = new Argument();
+    ExpressionA e1;
+    ExpressionA e2;
+}
+{
+    ( (e1=expression()) {arg.add(e1);}
+    ( "," (e2=expression()) {arg.add(e2);}
+    )* )? {return arg;}
 }
