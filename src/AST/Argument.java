@@ -25,6 +25,13 @@ public class Argument extends ExpressionA {
     }
 
     public String toAssembly() {
-        return "";
+        StringBuilder asb = new StringBuilder();
+
+        for (ExpressionA e : arg) {
+            asb.append(e.toAssembly()).append("\n");
+            asb.append("SetArg\n");
+        }
+
+        return asb.toString();
     }
 }

@@ -31,10 +31,10 @@ public class DecArgument extends ExpressionA {
     public String toAssembly() {
         StringBuilder asb = new StringBuilder();
 
-        asb.append("DecArg ").append(arg.get(0));
+        asb.append("DecArg ").append(arg.get(0).nom);
 
         for (int i = 1; i < arg.size(); i++) {
-            asb.append("\nDecArg ").append(arg.get(i));
+            asb.append("\nDecArg ").append(arg.get(i).nom);
         }
 
         return asb.toString();

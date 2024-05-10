@@ -27,9 +27,9 @@ public class Fonction extends ExpressionA {
         StringBuilder asb = new StringBuilder();
 
         asb.append("DecVar ").append(nom);
-        asb.append("\nNewClo ").append(arg.size + 1);
+        asb.append("\nNewClo ").append(arg.size + 1).append("\n");
         asb.append(arg.toAssembly());
-        asb.append("SetVar ").append(nom);
+        asb.append("\nSetVar ").append(nom).append("\n");
         asb.append(codeFonction.toAssembly());
 
         return asb.toString();
