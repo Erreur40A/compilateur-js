@@ -22,6 +22,8 @@ public class Compilateur {
             if(eA!=null)
                 bw.write(eA.toAssembly());
 
+            bw.close();
+
         } catch (TokenMgrError e) {
             System.out.println("Token Ceci n'est pas une expression arithm\u00e9thique");
         } catch (ParseException e){
