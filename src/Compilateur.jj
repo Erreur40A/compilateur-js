@@ -18,9 +18,9 @@ public class Compilateur {
             System.out.println(eA);
 
         } catch (TokenMgrError e) {
-            System.out.println("Token Ceci n'est pas une expression arithm\u00e9thique");
+            System.out.println("Token Ceci n'est pas une expression reconnue");
         } catch (ParseException e){
-            System.out.println("Parseur Ceci n'est pas une expression arithm\u00e9thique");
+            System.out.println("Parseur Ceci n'est pas une expression reconnue");
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -107,12 +107,18 @@ ExpressionA command () :
     |";"
     |"{" e1=program() "}" {return e1;}
     |<IF> "(" (e1=expression()) ")" (e2=command()) <ELSE> (e3=command()) {return new IfThenElse(e1, e2, e3);}
-    |<WHILE> "(" (e1=expression()) ")" (e2=command()) { return new While(e1, e2);}
-    |<FUNCTION> <IDENTIFIANT> "(" delc_args() ")" "{" program() "}"
-    |<RETURN> expression() ";"
+    |<WHILE> "(" (e1=expression()) ")" (e2=command()) {return new While(e1, e2);}
+    /*|<FUNCTION> (t=<IDENTIFIANT>) "(" delc_args() ")" "{" program() "}"
+    |<RETURN> expression() ";" {}*/
 }
 
-
+/*
+ExpressionA delc_args() :
+{}
+{
+    <IDENTIFIANT> ( "," <IDENTIFIANT> )*
+}
+*/
 
 ExpressionA expression () :
 {
@@ -156,11 +162,18 @@ ExpressionA facteur () :
     | t=<NOMBRE> {return new Num(Float.parseFloat(t.image));}
     | t=<NOMBRESCI> {return new Num(Float.parseFloat(t.image));}
     | t=<NAN>  {return new Num(Float.parseFloat(t.image));}
-    | t=<BOOLEAN> {return new Bool(Boolean.parseBoolean(t.image));} ( "(" argument() ")" )?
+    | t=<BOOLEAN> {return new Bool(Boolean.parseBoolean(t.image));}
+    | (t=<IDENTIFIANT>) "(" (e=argument()) ")" {return new CallFonction(t.image, e);}
 }
 
-void argument () :
-{}
+ExpressionA argument () :
 {
-    expression() ("," expression())*
+    Argument arg = new Argument();
+    ExpressionA e1;
+    ExpressionA e2;
+}
+{
+    ( (e1=expression()) {arg.add(e1);}
+    ( "," (e2=expression()) {arg.add(e2);}
+    )* )? {return arg;}
 }
