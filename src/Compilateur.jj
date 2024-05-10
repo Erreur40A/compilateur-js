@@ -56,6 +56,8 @@ TOKEN :
   | <IF: "if" >
   | <ELSE: "else" >
   | <WHILE: "while" >
+  | <FUNCTION: "function" >
+  | <RETURN: "return" >
   | <IDENTIFIANT: (["a"-"z"] | ["A"-"Z"] | "$" | "_") (["a"-"z"] | ["A"-"Z"] | ["1"-"9"] | "$" | "_")* >
 }
 
@@ -81,6 +83,14 @@ void command () :
     |"{" program() "}"
     |<IF> "(" expression() ")" command() <ELSE> command()
     |<WHILE> "(" expression() ")" command()
+    |<FUNCTION> <IDENTIFIANT> "(" delc_args() ")" "{" program() "}"
+    |<RETURN> expression() ";"
+}
+
+void delc_args() :
+{}
+{
+    <IDENTIFIANT> ( "," <IDENTIFIANT> )*
 }
 
 void expression () :
@@ -88,9 +98,9 @@ void expression () :
 {  terme()
     ("+" terme()
     | "-" terme()
-    |<EGALITE> terme()
-    |<PPETITOUE> terme()
-    |<PGRANDOUE> terme()
+    | <EGALITE> terme()
+    | <PPETITOUE> terme()
+    | <PGRANDOUE> terme()
     | "!" terme()
     | "<" terme()
     | ">" terme()
@@ -110,7 +120,13 @@ void facteur () :
 {}
 {   "(" expression() ")"
     |"-" facteur()
-    |(<NOMBRE> | <NOMBRESCI> | <NAN>)
+    |(<NOMBRE> | <NOMBRESCI> | <NAN> )
     |<BOOLEAN>
-    |<IDENTIFIANT>
+    |<IDENTIFIANT> ( "(" argument() ")" )?
+}
+
+void argument () :
+{}
+{
+    expression() ("," expression())*
 }
