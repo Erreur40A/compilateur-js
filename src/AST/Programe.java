@@ -30,14 +30,16 @@ public class Programe extends ExpressionA {
     }
 
     public String toString() {
-        String res = symbole() + "(";
+        StringBuilder res = new StringBuilder();
 
-        for (ExpressionA e : commande) {
-            res += "\n" + e.toString();
+        res.append(symbole()).append("(");
+        res.append(commande.get(0).toString());
+
+        for (int i = 1; i < commande.size(); i++) {
+            res.append(", ").append(commande.get(i).toString());
         }
+        res.append(")");
 
-        res += "\n)";
-
-        return res;
+        return res.toString();
     }
 }

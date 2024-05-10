@@ -1,17 +1,22 @@
 package AST;
 
+/*Appel de fonction*/
 public class CallFonction extends ExpressionA {
     public String nom;
     public ExpressionA arg;
 
     public CallFonction(String nom, ExpressionA arg) {
-        super(arg.size + 1);
+        super(1);
         this.nom = nom;
         this.arg = arg;
+        if (arg != null)
+            size = arg.size + 1;
     }
 
     public String toString() {
-        return String.format("%1$s(%2$s)", nom, arg.toString());
+        if (arg != null)
+            return String.format("%1$s(%2$s)", nom, arg.toString());
+        return String.format("%1$s()", nom);
     }
 
     public String toAssembly() {
