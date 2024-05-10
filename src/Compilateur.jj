@@ -106,7 +106,7 @@ ExpressionA command () :
     |<IF> "(" (e1=expression()) ")" (e2=command()) <ELSE> (e3=command()) {return new IfThenElse(e1, e2, e3);}
     |<WHILE> "(" (e1=expression()) ")" (e2=command()) {return new While(e1, e2);}
     |<FUNCTION> (t=<IDENTIFIANT>) "(" (e1=delc_args()) ")" "{" (e2=program()) "}" {return new Fonction(t.image, e1, e2);}
-    |<RETURN> (e1=expression()) ";" {f.addReturn(e1);}
+    |<RETURN> (e1=expression()) ";" {}
 }
 
 
@@ -165,9 +165,8 @@ ExpressionA facteur () :
     | t=<NOMBRESCI> {return new Num(Float.parseFloat(t.image));}
     | t=<NAN>  {return new Num(Float.parseFloat(t.image));}
     | t=<BOOLEAN> {return new Bool(Boolean.parseBoolean(t.image));}
-    | (t=<IDENTIFIANT>) ("(" (e=argument()) ")")? 
-        {if(e!=null) return new CallFonction(t.image, e); 
-         else return new Variable(t.image);}
+    | (t=<IDENTIFIANT>) ("(" (e=argument()) ")")?
+        {return e != null ? new CallFonction(t.image, e) : new Variable(t.image);}
 }
 
 ExpressionA argument () :

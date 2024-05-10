@@ -19,9 +19,6 @@ public class Fonction extends ExpressionA {
         this.codeFonction = codeFonction;
     }
 
-    public void addReturn(ExpressionA e) {
-    }
-
     public String toString() {
         return String.format("Fonc(%1$s, (%2$s), %3$s)", nom, arg.toString(), codeFonction.toString());
     }
