@@ -1,5 +1,6 @@
 package AST;
 
+/*Appel de fonction*/
 public class CallFonction extends ExpressionA {
     public String nom;
     public ExpressionA arg;
