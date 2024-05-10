@@ -49,6 +49,7 @@ TOKEN :
   | <EGALITE: "==" >
   | <PPETITOUE: "<=" >
   | <PGRANDOUE: ">=" >
+  | <DIFFERENT: "!=" >
   | <ET: "&&" >
   | <NAN: "NaN" >
   | <NOMBRESCI: <NOMBRE> "e" ("-")? (["0"-"9"])+ >
@@ -101,7 +102,7 @@ void expression () :
     | <EGALITE> terme()
     | <PPETITOUE> terme()
     | <PGRANDOUE> terme()
-    | "!" terme()
+    | <DIFFERENT> terme()
     | "<" terme()
     | ">" terme()
     | <ET> terme()
@@ -120,6 +121,7 @@ void facteur () :
 {}
 {   "(" expression() ")"
     |"-" facteur()
+    |"!" facteur()
     |(<NOMBRE> | <NOMBRESCI> | <NAN> )
     |<BOOLEAN>
     |<IDENTIFIANT> ( "(" argument() ")" )?
