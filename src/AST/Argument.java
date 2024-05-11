@@ -17,8 +17,10 @@ public class Argument extends ExpressionA {
     public String toString() {
         StringBuilder res = new StringBuilder();
 
-        for (ExpressionA e : arg) {
-            res.append(e.toString());
+        res.append(arg.get(0).toString());
+
+        for (int i = 1; i < arg.size(); i++) {
+            res.append(", ").append(arg.get(i).toString());
         }
 
         return res.toString();

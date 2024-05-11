@@ -15,8 +15,8 @@ public class CallFonction extends ExpressionA {
 
     public String toString() {
         if (arg != null)
-            return String.format("%1$s(%2$s)", nom, arg.toString());
-        return String.format("%1$s()", nom);
+            return String.format("callFonc(%1$s, %2$s)", nom, arg.toString());
+        return String.format("callFonc(%1$s)", nom);
     }
 
     public String toAssembly() {
