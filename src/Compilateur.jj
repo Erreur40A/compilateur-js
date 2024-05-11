@@ -67,6 +67,7 @@ TOKEN :
   | <FUNCTION: "function" >
   | <RETURN: "return" >
   | <IDENTIFIANT: (["a"-"z"] | ["A"-"Z"] | "$" | "_") (["a"-"z"] | ["A"-"Z"] | ["1"-"9"] | "$" | "_")* >
+  | <AFFECTATION: "=">
 
 }
 
@@ -140,6 +141,7 @@ ExpressionA expression () :
     | ">" (droite=terme()) {gauche=new PGrand(gauche, droite); res=gauche;}
     | <ET> (droite=terme()) {gauche=new Et(gauche, droite); res=gauche;}
     )* {return res;})
+    |gauche=affectation() {res=gauche;}
 }
 
 ExpressionA terme () :
