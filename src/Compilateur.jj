@@ -60,6 +60,7 @@ TOKEN :
   | <FUNCTION: "function" >
   | <RETURN: "return" >
   | <IDENTIFIANT: (["a"-"z"] | ["A"-"Z"] | "$" | "_") (["a"-"z"] | ["A"-"Z"] | ["1"-"9"] | "$" | "_")* >
+  | <AFFECTATION: "=">
 }
 
 void mainNT () :
@@ -107,6 +108,7 @@ void expression () :
     | ">" terme()
     | <ET> terme()
     )*
+   | affectation()
 }
 
 void terme () :
@@ -114,6 +116,7 @@ void terme () :
 { facteur()
     ("*" facteur()
     |"/" facteur()
+    |"%" facteur()
     )*
 }
 
@@ -131,4 +134,10 @@ void argument () :
 {}
 {
     expression() ("," expression())*
+}
+
+void affectation () :
+{}
+{
+    <IDENTIFIANT> <AFFECTATION> expression()
 }
