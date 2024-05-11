@@ -17,7 +17,7 @@ public class Affect extends ExpressionA {
 
 	public String toAssembly() {
 		String asb = val.toAssembly() +
-				"SetVar " + ident;
+				"SetVar " + ident + "\n";
 
 		return asb;
 	}

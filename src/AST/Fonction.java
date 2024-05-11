@@ -26,12 +26,15 @@ public class Fonction extends ExpressionA {
     public String toAssembly() {
         StringBuilder asb = new StringBuilder();
 
+        asb.append("#début déclaration fonction\n");
         asb.append("DecVar ").append(nom);
         asb.append("\nNewClo ").append(arg.size + 1).append("\n");
         asb.append(arg.toAssembly());
-        asb.append("#fin déclaration fonction\n");
         asb.append("SetVar ").append(nom).append("\n");
+        asb.append("#fin déclaration fonction\n");
+        asb.append("#début code fonction\n");
         asb.append(codeFonction.toAssembly());
+        asb.append("#fin code fonction\n");
 
         return asb.toString();
     }

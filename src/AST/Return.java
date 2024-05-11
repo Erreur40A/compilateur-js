@@ -17,7 +17,7 @@ public class Return extends ExpressionA {
     }
 
     public String toAssembly() {
-        String asb = e.toAssembly() + "Return\n";
+        String asb = e.toAssembly() + "Return";
 
         return asb;
     }

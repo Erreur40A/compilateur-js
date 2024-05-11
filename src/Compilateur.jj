@@ -78,7 +78,6 @@ SKIP :
 TOKEN :
 { < NOMBRE: (["0"-"9"])+ ("." (["0"-"9"])*)? >
   //Priorité boolean: +,-,*,/ prioritaire sur ==, <=
-  | <EOL: "\n\n">
   | <BOOLEAN: "True" | "False" | "true" | "false"> 
   | <EGALITE: "==" >
   | <DIFFERENT: "!=" >
@@ -95,7 +94,6 @@ TOKEN :
   | <FUNCTION: "function" >
   | <RETURN: "return" >
   | <IDENTIFIANT: (["a"-"z"] | ["A"-"Z"] | "$" | "_") (["a"-"z"] | ["A"-"Z"] | ["1"-"9"] | "$" | "_")* >
-  | <AFFECTATION: "=">
 }
 
 ExpressionA mainNT () :
@@ -221,12 +219,4 @@ ExpressionA affectation() :
 }
 {
     <AFFECTATION> val=expression(){return val;}
-}
-
-ExpressionA affectation() :
-{
-    ExpressionA val;
-}
-{
-    <AFFECTATION> (val=expression()) {return val;}
 }

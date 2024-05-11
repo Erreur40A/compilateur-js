@@ -11,9 +11,9 @@ public class Mod extends ExpressionA_Binaire {
     }
 
     public String toAssembly() {
-        String asb = gauche.toAssembly() + "\n" +
-                droite.toAssembly() + "\n" +
-                "ModuNb";
+        String asb = gauche.toAssembly() +
+                droite.toAssembly() +
+                "ModuNb\n";
         return asb;
     }
 
