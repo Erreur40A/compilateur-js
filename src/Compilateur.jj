@@ -78,7 +78,7 @@ SKIP :
 TOKEN :
 { < NOMBRE: (["0"-"9"])+ ("." (["0"-"9"])*)? >
   //Priorité boolean: +,-,*,/ prioritaire sur ==, <=
-  | <BOOLEAN: "True" | "False" | "true" | "false"> 
+  | <BOOLEAN: "true" | "false"> 
   | <EGALITE: "==" >
   | <DIFFERENT: "!=" >
   | <PPETITOUE: "<=" >
