@@ -1,6 +1,5 @@
 PARSER_BEGIN(Compilateur)
 
-
 public class Compilateur {
     public static void main(String[] args) {
         try {
@@ -42,17 +41,18 @@ SKIP :
 }
 
 TOKEN :
-{ < NOMBRE: (["0"-"9"])+ ("." (["0"-"9"])*)? >
+{ <EOL: "\n\n">
+  | <NOMBRE: (["0"-"9"])+ ("." (["0"-"9"])*)? >
+  | <NAN: "NaN" >
+  | <NOMBRESCI: <NOMBRE> "e" ("-")? (["0"-"9"])+ >
   //Priorité boolean: +,-,*,/ prioritaire sur ==, <=
-  | <EOL: "\n\n">
-  | <BOOLEAN: "True" | "False" | "true" | "false"> 
+  | <BOOLEAN: "true" | "false"> 
   | <EGALITE: "==" >
   | <PPETITOUE: "<=" >
   | <PGRANDOUE: ">=" >
   | <DIFFERENT: "!=" >
   | <ET: "&&" >
-  | <NAN: "NaN" >
-  | <NOMBRESCI: <NOMBRE> "e" ("-")? (["0"-"9"])+ >
+  | <AFFECTATION: "=">
   | <IMPORT: "import" >
   | <IF: "if" >
   | <ELSE: "else" >
@@ -96,7 +96,8 @@ void delc_args() :
 
 void expression () :
 {}
-{  terme()
+{
+   terme()
     ("+" terme()
     | "-" terme()
     | <EGALITE> terme()
@@ -114,21 +115,28 @@ void terme () :
 { facteur()
     ("*" facteur()
     |"/" facteur()
+    |"%" facteur()
     )*
 }
 
 void facteur () :
 {}
-{   "(" expression() ")"
+{   
+    "(" expression() ")"
     |"-" facteur()
     |"!" facteur()
-    |(<NOMBRE> | <NOMBRESCI> | <NAN> )
-    |<BOOLEAN>
-    |<IDENTIFIANT> ( "(" argument() ")" )?
+    |(<NOMBRE> | <NOMBRESCI> | <NAN> | <BOOLEAN> )
+    |<IDENTIFIANT> (argument() | affectation() )?
+}
+
+void affectation () :
+{}
+{
+    <AFFECTATION> expression()
 }
 
 void argument () :
 {}
 {
-    (expression() ("," expression())*)?
+    "(" ( expression() ("," expression())* )? ")"
 }
