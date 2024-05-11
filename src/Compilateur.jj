@@ -94,6 +94,7 @@ TOKEN :
   | <FUNCTION: "function" >
   | <RETURN: "return" >
   | <IDENTIFIANT: (["a"-"z"] | ["A"-"Z"] | "$" | "_") (["a"-"z"] | ["A"-"Z"] | ["1"-"9"] | "$" | "_")* >
+  | <AFFECTATION: "=">
 }
 
 ExpressionA mainNT () :
@@ -119,7 +120,6 @@ ExpressionA program () :
 
 ExpressionA command () :
 {
-    Fonction f = new Fonction();
     ExpressionA e1;
     ExpressionA e2;
     ExpressionA e3;
@@ -166,6 +166,7 @@ ExpressionA expression () :
     | ">" (droite=terme()) {gauche=new PGrand(gauche, droite); res=gauche;}
     | <ET> (droite=terme()) {gauche=new Et(gauche, droite); res=gauche;}
     )* {return res;})
+
 }
 
 ExpressionA terme () :
@@ -177,6 +178,7 @@ ExpressionA terme () :
 { gauche=facteur() {res=gauche;}
     ("*" (droite=facteur()) {gauche=new Mult(gauche, droite); res=gauche;}
     |"/" (droite=facteur()) {gauche=new Div(gauche, droite); res=gauche;}
+    |"%" (droite=facteur()) {gauche=new Mod(gauche,droite); res=gauche;}
     )* {return res;}
 }
 
@@ -192,8 +194,12 @@ ExpressionA facteur () :
     | t=<NOMBRESCI> {return new Num(Float.parseFloat(t.image));}
     | t=<NAN>  {return new Num(Float.parseFloat(t.image));}
     | t=<BOOLEAN> {return new Bool(Boolean.parseBoolean(t.image));}
-    | (t=<IDENTIFIANT>) ("(" (e=argument()) ")")?
-        {return e != null ? new CallFonction(t.image, e) : new Variable(t.image);}
+    | (t=<IDENTIFIANT>) ("(" (e=argument()) ")" | <AFFECTATION> (e=affectation()) )?
+        {
+            if(e==null) return new Variable(t.image);
+            if(e instanceof Argument){ return new CallFonction(t.image, e); }
+            else{ return new Affect(t.image,e); }
+        }
 }
 
 ExpressionA argument () :
@@ -206,4 +212,12 @@ ExpressionA argument () :
     ( (e1=expression()) {arg.add(e1);}
     ( "," (e2=expression()) {arg.add(e2);}
     )* )? {return arg;}
+}
+
+ExpressionA affectation() :
+{
+    ExpressionA val;
+}
+{
+    <AFFECTATION> (val=expression()) {return val;}
 }

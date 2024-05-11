@@ -6,9 +6,9 @@ public class PGrandE extends ExpressionA_Binaire{
     public String symbole() {return "pGrandE";}
 
     public String toAssembly(){
-        String asb=gauche.toAssembly() + "\n" +
-                   droite.toAssembly() + "\n" +
-                   "GrEqNb";
+        String asb=gauche.toAssembly() +
+                   droite.toAssembly() +
+                   "GrEqNb\n";
 
         return asb;
     }

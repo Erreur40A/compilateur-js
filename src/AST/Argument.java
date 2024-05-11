@@ -15,6 +15,8 @@ public class Argument extends ExpressionA {
     }
 
     public String toString() {
+        if(arg.size() == 0) return "";
+
         StringBuilder res = new StringBuilder();
 
         res.append(arg.get(0).toString());
@@ -27,10 +29,12 @@ public class Argument extends ExpressionA {
     }
 
     public String toAssembly() {
+        if(arg.size() == 0) return "";
+
         StringBuilder asb = new StringBuilder();
 
         for (ExpressionA e : arg) {
-            asb.append(e.toAssembly()).append("\n");
+            asb.append(e.toAssembly());
             asb.append("SetArg\n");
         }
 

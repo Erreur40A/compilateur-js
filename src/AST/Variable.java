@@ -15,7 +15,7 @@ public class Variable extends ExpressionA {
     public String toAssembly() {
         StringBuilder asb = new StringBuilder();
 
-        asb.append("GetVar ").append(nom);
+        asb.append("GetVar ").append(nom).append("\n");
 
         return asb.toString();
     }

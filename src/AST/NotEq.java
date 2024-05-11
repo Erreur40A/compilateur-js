@@ -6,9 +6,9 @@ public class NotEq extends ExpressionA_Binaire{
     public String symbole() {return "différent";}
     
     public String toAssembly(){
-        String asb=gauche.toAssembly() + "\n" +
-                   droite.toAssembly() + "\n" +
-                   "NotEql";
+        String asb=gauche.toAssembly() +
+                   droite.toAssembly() +
+                   "NotEql\n";
 
         return asb;
     }

@@ -8,11 +8,11 @@ public class Et extends ExpressionA_Binaire{
     public String symbole() {return "&&";}
 
     public String toAssembly(){
-        String asb=gauche.toAssembly() + "\n" +
+        String asb=gauche.toAssembly() +
                    "ConJmp "+ (droite.size + 1) + "\n" +
-                   droite.toAssembly() + "\n" +
+                   droite.toAssembly() +
                    "Jump 1\n" +
-                   "CsteBo False";
+                   "CsteBo False\n";
 
         return asb;
     }

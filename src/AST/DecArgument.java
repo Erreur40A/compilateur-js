@@ -17,6 +17,8 @@ public class DecArgument extends ExpressionA {
     }
 
     public String toString() {
+        if(arg.size() == 0) return "";
+
         StringBuilder res = new StringBuilder();
 
         res.append(arg.get(0).toString());
@@ -29,12 +31,12 @@ public class DecArgument extends ExpressionA {
     }
 
     public String toAssembly() {
+        if(arg.size() == 0) return "";
+
         StringBuilder asb = new StringBuilder();
 
-        asb.append("DecArg ").append(arg.get(0).nom);
-
-        for (int i = 1; i < arg.size(); i++) {
-            asb.append("\nDecArg ").append(arg.get(i).nom);
+        for (int i = 0; i < arg.size(); i++) {
+            asb.append("DecArg ").append(arg.get(i).nom).append("\n");
         }
 
         return asb.toString();

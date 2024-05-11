@@ -6,9 +6,9 @@ public class PPetitE extends ExpressionA_Binaire{
     public String symbole() {return "pPetitE";}
 
     public String toAssembly(){
-        String asb=gauche.toAssembly() + "\n" +
-                   droite.toAssembly() + "\n" +
-                   "LoEqNb";
+        String asb=gauche.toAssembly() +
+                   droite.toAssembly() +
+                   "LoEqNb\n";
 
         return asb;
     }

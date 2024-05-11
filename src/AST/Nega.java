@@ -13,8 +13,7 @@ public class Nega extends ExpressionA{
     }
 
     public String toAssembly(){
-        String asb=arg.toAssembly() + "\n" +
-                   "Not";
+        String asb=arg.toAssembly() + "Not\n";
 
         return asb;
     }

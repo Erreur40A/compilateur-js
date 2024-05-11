@@ -6,17 +6,17 @@ public class CallFonction extends ExpressionA {
     public ExpressionA arg;
 
     public CallFonction(String nom, ExpressionA arg) {
-        super(1);
+        super(3);
         this.nom = nom;
         this.arg = arg;
         if (arg != null)
-            size = arg.size + 1;
+            size = arg.size + 3;
     }
 
     public String toString() {
         if (arg != null)
             return String.format("callFonc(%1$s, %2$s)", nom, arg.toString());
-        return String.format("callFonc(%1$s)", nom);
+        return String.format("callFonc(%1$s, null)", nom);
     }
 
     public String toAssembly() {
@@ -25,7 +25,7 @@ public class CallFonction extends ExpressionA {
         asb.append("GetVar ").append(nom).append("\n");
         asb.append("StCall\n");
         asb.append(arg.toAssembly());
-        asb.append("Call");
+        asb.append("Call\n");
 
         return asb.toString();
     }

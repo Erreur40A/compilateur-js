@@ -13,7 +13,7 @@ public class Fonction extends ExpressionA {
     }
 
     public Fonction(String nom, ExpressionA arg, ExpressionA codeFonction) {
-        super(codeFonction.size + arg.size + 4);
+        super(codeFonction.size + arg.size + 3);
         this.nom = nom;
         this.arg = arg;
         this.codeFonction = codeFonction;
@@ -29,7 +29,8 @@ public class Fonction extends ExpressionA {
         asb.append("DecVar ").append(nom);
         asb.append("\nNewClo ").append(arg.size + 1).append("\n");
         asb.append(arg.toAssembly());
-        asb.append("\nSetVar ").append(nom).append("\n");
+        asb.append("#fin déclaration fonction\n");
+        asb.append("SetVar ").append(nom).append("\n");
         asb.append(codeFonction.toAssembly());
 
         return asb.toString();

@@ -14,9 +14,9 @@ public class While extends ExpressionA{
         StringBuilder asb = new StringBuilder();
 
         asb.append(condition.toAssembly());
-        asb.append("\nCondJmp ").append(bloc.size+1).append("\n");
+        asb.append("CondJmp ").append(bloc.size+1).append("\n");
         asb.append(bloc.toAssembly());
-        asb.append("\nJump ").append(-condition.size - bloc.size - 2);
+        asb.append("Jump ").append(-condition.size - bloc.size - 2).append("\n");
 
         return asb.toString();
     }

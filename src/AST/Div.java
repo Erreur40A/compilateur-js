@@ -11,9 +11,9 @@ public class Div extends ExpressionA_Binaire{
     }
 
     public String toAssembly(){
-        String asb=gauche.toAssembly() + "\n" +
-                   droite.toAssembly() + "\n" +
-                   "DivNb";
+        String asb=gauche.toAssembly() +
+                   droite.toAssembly() +
+                   "DivNb\n";
 
         return asb;
     }

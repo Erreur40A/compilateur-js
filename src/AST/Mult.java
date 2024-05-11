@@ -7,9 +7,9 @@ public class Mult extends ExpressionA_Binaire {
     public String symbole() {return "fois";}
     
     public String toAssembly(){
-        String asb=gauche.toAssembly() + "\n" +
-                   droite.toAssembly() + "\n" +
-                   "MultNb";
+        String asb=gauche.toAssembly() +
+                   droite.toAssembly() +
+                   "MultNb\n";
 
         return asb;
     }

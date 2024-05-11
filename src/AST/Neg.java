@@ -14,8 +14,7 @@ public class Neg extends ExpressionA {
     }
 
     public String toAssembly(){
-        String asb=arg.toAssembly() + "\n" +
-                   "NegaNb";
+        String asb=arg.toAssembly() + "NegaNb\n";
 
         return asb;
     }

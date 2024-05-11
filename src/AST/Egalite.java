@@ -6,9 +6,9 @@ public class Egalite extends ExpressionA_Binaire{
     public String symbole() {return "egale";}
 
     public String toAssembly(){
-        String asb=gauche.toAssembly() + "\n" +
-                   droite.toAssembly() + "\n" +
-                   "Equals";
+        String asb=gauche.toAssembly() +
+                   droite.toAssembly() +
+                   "Equals\n";
 
         return asb;
     }

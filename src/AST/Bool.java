@@ -13,6 +13,6 @@ public class Bool extends ExpressionA{
     }
 
     public String toAssembly(){
-        return "CsteBo " + b;
+        return "CsteBo " + b + "\n";
     }
 }
