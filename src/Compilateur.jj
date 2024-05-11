@@ -94,6 +94,7 @@ TOKEN :
   | <FUNCTION: "function" >
   | <RETURN: "return" >
   | <IDENTIFIANT: (["a"-"z"] | ["A"-"Z"] | "$" | "_") (["a"-"z"] | ["A"-"Z"] | ["1"-"9"] | "$" | "_")* >
+  | <AFFECTATION: "=">
 }
 
 ExpressionA mainNT () :
@@ -166,6 +167,7 @@ ExpressionA expression () :
     | ">" (droite=terme()) {gauche=new PGrand(gauche, droite); res=gauche;}
     | <ET> (droite=terme()) {gauche=new Et(gauche, droite); res=gauche;}
     )* {return res;})
+    |gauche=affectation() {res=gauche;}
 }
 
 ExpressionA terme () :
@@ -177,6 +179,7 @@ ExpressionA terme () :
 { gauche=facteur() {res=gauche;}
     ("*" (droite=facteur()) {gauche=new Mult(gauche, droite); res=gauche;}
     |"/" (droite=facteur()) {gauche=new Div(gauche, droite); res=gauche;}
+    |"%" (droite=facteur()) {gauche=new Mod(gauche,droite); res=gauche;}
     )* {return res;}
 }
 
@@ -207,3 +210,13 @@ ExpressionA argument () :
     ( "," (e2=expression()) {arg.add(e2);}
     )* )? {return arg;}
 }
+
+ExpressionA affectation() :
+{
+    ExpressionA val;
+    Token t;
+}
+{
+    t=<IDENTIFIANT> <AFFECTATION> val=expression(){return new Affect(t.image,val);}
+}
+
