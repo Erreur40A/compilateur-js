@@ -130,5 +130,5 @@ void facteur () :
 void argument () :
 {}
 {
-    expression() ("," expression())*
+    (expression() ("," expression())*)?
 }
