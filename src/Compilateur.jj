@@ -84,6 +84,7 @@ TOKEN :
   | <DIFFERENT: "!=" >
   | <PPETITOUE: "<=" >
   | <PGRANDOUE: ">=" >
+  | <AFFECTATION: "=">
   | <ET: "&&" >
   | <NAN: "NaN" >
   | <NOMBRESCI: <NOMBRE> "e" ("-")? (["0"-"9"])+ >
@@ -140,11 +141,11 @@ ExpressionA command () :
 DecArgument delc_args() :
 {
     DecArgument arg = new DecArgument();
-    Token a1;
+    Token a;
 }
 {
-    ((a1=<IDENTIFIANT>) { arg.add(new Variable(a1.image)); } 
-      ( "," (a1=<IDENTIFIANT>) {arg.add(new Variable(a1.image)); } 
+    ((a=<IDENTIFIANT>) { arg.add(new Variable(a.image)); } 
+      ( "," (a=<IDENTIFIANT>) {arg.add(new Variable(a.image)); } 
       )* )? {return arg;}
 }
 
@@ -194,11 +195,11 @@ ExpressionA facteur () :
     | t=<NOMBRESCI> {return new Num(Float.parseFloat(t.image));}
     | t=<NAN>  {return new Num(Float.parseFloat(t.image));}
     | t=<BOOLEAN> {return new Bool(Boolean.parseBoolean(t.image));}
-    | (t=<IDENTIFIANT>) ("(" (e=argument()) ")" | <AFFECTATION> (e=affectation()) )?
+    | (t=<IDENTIFIANT>) ("(" (e=argument()) ")" | (e=affectation()) )?
         {
-            if(e==null) return new Variable(t.image);
-            if(e instanceof Argument){ return new CallFonction(t.image, e); }
-            else{ return new Affect(t.image,e); }
+         if(e == null) return new Variable(t.image);
+         if(e instanceof Argument) return new CallFonction(t.image, e);
+         else return new Affect(t.image, e);
         }
 }
 
@@ -212,6 +213,14 @@ ExpressionA argument () :
     ( (e1=expression()) {arg.add(e1);}
     ( "," (e2=expression()) {arg.add(e2);}
     )* )? {return arg;}
+}
+
+ExpressionA affectation() :
+{
+    ExpressionA val;
+}
+{
+    <AFFECTATION> val=expression(){return val;}
 }
 
 ExpressionA affectation() :
