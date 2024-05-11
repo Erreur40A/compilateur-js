@@ -2,7 +2,7 @@ package AST;
 
 public class Mod extends ExpressionA_Binaire {
 
-    public Mod(ExpressionA gauche, ExpressionA droite) {
+        pubic Mod(ExpressionA gauche, ExpressionA droite) {
         super(gauche, droite);
     }
 
@@ -17,4 +17,12 @@ public class Mod extends ExpressionA_Binaire {
         return asb;
     }
 
+     
+        
+    
 }
+
+        
+    
+
+    
