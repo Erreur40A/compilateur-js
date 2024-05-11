@@ -1,6 +1,6 @@
 package AST;
 
-public lass Affect extends ExpressionA {
+public class Affect extends ExpressionA {
 
 	public String ident;
 	public ExpressionA val;
