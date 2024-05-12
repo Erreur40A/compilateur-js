@@ -13,7 +13,7 @@ public class Mod extends ExpressionA_Binaire {
     public String toAssembly() {
         String asb = gauche.toAssembly() +
                 droite.toAssembly() +
-                "ModuNb\n";
+                "Modulo\n";
         return asb;
     }
 
