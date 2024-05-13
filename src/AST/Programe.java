@@ -26,8 +26,6 @@ public class Programe extends ExpressionA {
             asb += eA.toAssembly();
         }
 
-        asb += "\n";
-
         return asb;
     }
 
